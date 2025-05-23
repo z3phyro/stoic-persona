@@ -1,5 +1,6 @@
 import { useNavigate } from '@solidjs/router';
 import { User } from '@supabase/supabase-js';
+import clsx from 'clsx';
 import { Component, createEffect, createMemo, createSignal, Show } from 'solid-js';
 import Spinner from '~/components/Spinner';
 import { supabase } from '~/lib/supabase';
@@ -79,32 +80,34 @@ const Chat: Component = () => {
         <Spinner />
       </Show>
       <Show when={user()}>
-      <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+      <div class="min-h-screen max-w-screen overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 text-white">
         <div class="flex h-screen">
         {/* Sidebar */}
         <div
-          class={`bg-gray-800 border-r border-gray-700 transition-all duration-300 ${
-            isSidebarOpen() ? 'w-80' : 'w-0'
+          class={`w-80 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 ${
+            isSidebarOpen() ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <div class="p-4">
+          <div class={`p-4 ${!isSidebarOpen() && 'p-2 '}`}>
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-xl font-bold">Conversations</h2>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                class="text-gray-400 hover:text-white"
-              >
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <h2 class={`text-xl font-bold ${!isSidebarOpen() && 'hidden'}`}>Conversations</h2>
+              <Show when={isSidebarOpen()}>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  class="text-gray-400 hover:text-white"
+                >
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </Show>
             </div>
             
-            <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-4">
+            <button class={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 mb-4 ${!isSidebarOpen() && 'hidden'}`}>
               New Conversation
             </button>
             
-            <div class="space-y-2">
+            <div class={`space-y-2 ${!isSidebarOpen() && 'hidden'}`}>
               {conversations().map((conv) => (
                 <button
                   onClick={() => setCurrentConversation(conv.id)}
@@ -126,7 +129,7 @@ const Chat: Component = () => {
         </div>
 
         {/* Main Chat Area */}
-        <div class="flex-1 flex flex-col">
+        <div class={clsx("flex-1 flex flex-col transition-all duration-300", !isSidebarOpen() && '-ml-80')}>
           {/* Chat Header */}
           <div class="p-4 border-b border-gray-700 flex items-center">
             <Show
