@@ -1,7 +1,7 @@
 import { useNavigate } from '@solidjs/router';
 import { User } from '@supabase/supabase-js';
 import clsx from 'clsx';
-import { Component, createEffect, createMemo, createSignal, Show } from 'solid-js';
+import { Component, createEffect, createSignal, Show } from 'solid-js';
 import Spinner from '~/components/Spinner';
 import Sidebar from '~/components/Sidebar';
 import { supabase } from '~/lib/supabase';
@@ -167,7 +167,7 @@ const Chat: Component = () => {
             {/* Main Chat Area */}
             <div class={clsx(
               "flex-1 flex flex-col transition-all duration-300",
-              !isSidebarOpen() && "-ml-80"
+              !isSidebarOpen() && "lg:-ml-80"
             )}>
               {/* Chat Header */}
               <div class="p-4 border-b border-gray-700 flex items-center">

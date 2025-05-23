@@ -16,12 +16,12 @@ interface ConversationsTabProps {
 
 const ConversationsTab: Component<ConversationsTabProps> = (props) => {
   return (
-    <div class="space-y-4">
+    <div class="space-y-4 pb-4">
       <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
         New Conversation
       </button>
       
-      <div class="space-y-2">
+      <div class="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
         {props.conversations.map((conv) => (
           <button
             onClick={() => props.onConversationSelect(conv.id)}
@@ -32,11 +32,13 @@ const ConversationsTab: Component<ConversationsTabProps> = (props) => {
                 : "hover:bg-gray-700"
             )}
           >
-            <h3 class="font-medium truncate">{conv.title}</h3>
-            <p class="text-sm text-gray-400 truncate">{conv.lastMessage}</p>
-            <p class="text-xs text-gray-500 mt-1">
-              {conv.timestamp.toLocaleDateString()}
-            </p>
+            <div class="min-w-0">
+              <h3 class="font-medium truncate">{conv.title}</h3>
+              <p class="text-sm text-gray-400 truncate">{conv.lastMessage}</p>
+              <p class="text-xs text-gray-500 mt-1">
+                {conv.timestamp.toLocaleDateString()}
+              </p>
+            </div>
           </button>
         ))}
       </div>

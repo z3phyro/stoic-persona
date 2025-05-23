@@ -47,7 +47,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
   return (
     <div
       class={clsx(
-        "w-80 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300",
+        "absolute lg:static w-80 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300",
         props.isOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
@@ -88,7 +88,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
                 : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             )}
           >
-            Chats
+            History
           </button>
         </div>
 

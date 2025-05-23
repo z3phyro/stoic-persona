@@ -27,23 +27,23 @@ interface ContextTabProps {
 
 const ContextTab: Component<ContextTabProps> = (props) => {
   return (
-    <div class="space-y-4">
+    <div class="space-y-4 pb-4">
       <div class="bg-gray-700 rounded-lg p-4">
         <h3 class="font-medium mb-2">User Profile</h3>
         <div class="space-y-2 text-sm">
-          <p><span class="text-gray-400">Name:</span> {props.user?.user_metadata?.full_name || 'Not set'}</p>
-          <p><span class="text-gray-400">Email:</span> {props.user?.email}</p>
+          <p class="truncate"><span class="text-gray-400">Name:</span> {props.user?.user_metadata?.full_name || 'Not set'}</p>
+          <p class="truncate"><span class="text-gray-400">Email:</span> {props.user?.email}</p>
         </div>
       </div>
 
       <div class="bg-gray-700 rounded-lg p-4">
         <h3 class="font-medium mb-4">Knowledge Sources</h3>
 
-        <div class="space-y-2 mb-4">
+        <div class="space-y-2 mb-4 max-h-[calc(100vh-400px)] overflow-y-auto">
           {props.sources.map((source) => (
             <div class="flex items-center justify-between bg-gray-600 rounded-lg p-2">
-              <div class="flex items-center space-x-2">
-                <span class="text-blue-400">
+              <div class="flex items-center space-x-2 min-w-0">
+                <span class="text-blue-400 flex-shrink-0">
                   {source.type === 'pdf' ? (
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -58,7 +58,7 @@ const ContextTab: Component<ContextTabProps> = (props) => {
               </div>
               <button
                 onClick={() => props.onRemoveSource(source.id)}
-                class="text-gray-400 hover:text-red-400 transition duration-300"
+                class="text-gray-400 hover:text-red-400 transition duration-300 flex-shrink-0 ml-2"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -131,7 +131,7 @@ const ContextTab: Component<ContextTabProps> = (props) => {
                       />
                       <button
                         onClick={props.onAddUrl}
-                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg transition duration-300 text-sm"
+                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg transition duration-300 text-sm whitespace-nowrap"
                       >
                         Add
                       </button>
