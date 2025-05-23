@@ -1,8 +1,39 @@
-import { Component } from 'solid-js';
-import { A } from '@solidjs/router';
+import { Component, createSignal } from 'solid-js';
+import { A, useNavigate } from '@solidjs/router';
 import Navigation from '../components/Navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignUp: Component = () => {
+  const [name, setName] = createSignal('');
+  const [email, setEmail] = createSignal('');
+  const [password, setPassword] = createSignal('');
+  const [confirmPassword, setConfirmPassword] = createSignal('');
+  const [error, setError] = createSignal('');
+  const [loading, setLoading] = createSignal(false);
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    setError('');
+
+    if (password() !== confirmPassword()) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await auth.signUp(email(), password(), name());
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during sign up');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navigation />
@@ -14,7 +45,13 @@ const SignUp: Component = () => {
               Create Your Account
             </h2>
             
-            <form class="space-y-6">
+            {error() && (
+              <div class="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
+                {error()}
+              </div>
+            )}
+            
+            <form class="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label for="name" class="block text-sm font-medium text-gray-300 mb-2">
                   Full Name
@@ -22,8 +59,11 @@ const SignUp: Component = () => {
                 <input
                   type="text"
                   id="name"
+                  value={name()}
+                  onInput={(e) => setName(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter your full name"
+                  required
                 />
               </div>
 
@@ -34,8 +74,11 @@ const SignUp: Component = () => {
                 <input
                   type="email"
                   id="email"
+                  value={email()}
+                  onInput={(e) => setEmail(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter your email"
+                  required
                 />
               </div>
               
@@ -46,8 +89,11 @@ const SignUp: Component = () => {
                 <input
                   type="password"
                   id="password"
+                  value={password()}
+                  onInput={(e) => setPassword(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Create a password"
+                  required
                 />
               </div>
 
@@ -58,8 +104,11 @@ const SignUp: Component = () => {
                 <input
                   type="password"
                   id="confirmPassword"
+                  value={confirmPassword()}
+                  onInput={(e) => setConfirmPassword(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Confirm your password"
+                  required
                 />
               </div>
               
@@ -67,6 +116,7 @@ const SignUp: Component = () => {
                 <input
                   type="checkbox"
                   id="terms"
+                  required
                   class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                 />
                 <label for="terms" class="ml-2 block text-sm text-gray-300">
@@ -83,9 +133,10 @@ const SignUp: Component = () => {
               
               <button
                 type="submit"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300"
+                disabled={loading()}
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Account
+                {loading() ? 'Creating Account...' : 'Create Account'}
               </button>
             </form>
             

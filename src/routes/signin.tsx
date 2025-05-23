@@ -1,8 +1,31 @@
-import { Component } from 'solid-js';
-import { A } from '@solidjs/router';
+import { Component, createSignal } from 'solid-js';
+import { A, useNavigate } from '@solidjs/router';
 import Navigation from '../components/Navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignIn: Component = () => {
+  const [email, setEmail] = createSignal('');
+  const [password, setPassword] = createSignal('');
+  const [error, setError] = createSignal('');
+  const [loading, setLoading] = createSignal(false);
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await auth.signIn(email(), password());
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during sign in');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navigation />
@@ -14,7 +37,13 @@ const SignIn: Component = () => {
               Welcome Back
             </h2>
             
-            <form class="space-y-6">
+            {error() && (
+              <div class="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
+                {error()}
+              </div>
+            )}
+            
+            <form class="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
                   Email
@@ -22,8 +51,11 @@ const SignIn: Component = () => {
                 <input
                   type="email"
                   id="email"
+                  value={email()}
+                  onInput={(e) => setEmail(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter your email"
+                  required
                 />
               </div>
               
@@ -34,8 +66,11 @@ const SignIn: Component = () => {
                 <input
                   type="password"
                   id="password"
+                  value={password()}
+                  onInput={(e) => setPassword(e.currentTarget.value)}
                   class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter your password"
+                  required
                 />
               </div>
               
@@ -57,9 +92,10 @@ const SignIn: Component = () => {
               
               <button
                 type="submit"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300"
+                disabled={loading()}
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign In
+                {loading() ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
             
