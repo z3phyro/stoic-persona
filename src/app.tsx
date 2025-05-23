@@ -1,21 +1,26 @@
-import { Component } from 'solid-js';
-import { Router, Route, Routes } from '@solidjs/router';
-import { AuthProvider } from './contexts/AuthContext';
+import { Component, Show } from 'solid-js';
+import { Router, Route, Navigate } from '@solidjs/router';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Home from './routes';
 import SignIn from './routes/signin';
 import SignUp from './routes/signup';
+import Chat from './routes/chat';
 import "./app.css";
-import Navigation from "./components/Navigation";
+
 
 const App: Component = () => {
   return (
-      <AuthProvider>
-    <Router>
+    <AuthProvider>
+      <Router>
           <Route path="/" component={Home} />
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
-    </Router>
-      </AuthProvider>
+          <Route 
+            path="/chat" 
+            component={Chat} 
+          />
+      </Router>
+    </AuthProvider>
   );
 };
 

@@ -26,7 +26,7 @@ const SignUp: Component = () => {
 
     try {
       await auth.signUp(email(), password(), name());
-      navigate('/dashboard');
+      navigate('/chat');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during sign up');
     } finally {
