@@ -1,4 +1,3 @@
-import { User } from '@supabase/supabase-js';
 import { Component, Show } from 'solid-js';
 import clsx from 'clsx';
 
@@ -12,7 +11,6 @@ interface Source {
 }
 
 interface ContextTabProps {
-  user: User | null;
   sources: Source[];
   showAddMenu: boolean;
   selectedSourceType: 'url' | 'upload' | null;
@@ -28,14 +26,6 @@ interface ContextTabProps {
 const ContextTab: Component<ContextTabProps> = (props) => {
   return (
     <div class="space-y-4 pb-4">
-      <div class="bg-gray-700 rounded-lg p-4">
-        <h3 class="font-medium mb-2">User Profile</h3>
-        <div class="space-y-2 text-sm">
-          <p class="truncate"><span class="text-gray-400">Name:</span> {props.user?.user_metadata?.full_name || 'Not set'}</p>
-          <p class="truncate"><span class="text-gray-400">Email:</span> {props.user?.email}</p>
-        </div>
-      </div>
-
       <div class="bg-gray-700 rounded-lg p-4">
         <h3 class="font-medium mb-4">Knowledge Sources</h3>
 
