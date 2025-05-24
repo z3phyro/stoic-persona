@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { Component, createEffect, createSignal, Show } from 'solid-js';
 import Spinner from '~/components/Spinner';
 import Sidebar from '~/components/Sidebar';
+import PersonaSidebar from '~/components/PersonaSidebar';
 import { supabase } from '~/lib/supabase';
 
 interface Message {
@@ -35,6 +36,7 @@ const Chat: Component = () => {
   const [user, setUser] = createSignal<User | null>(null);
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = createSignal(true);
+  const [isPersonaSidebarOpen, setIsPersonaSidebarOpen] = createSignal(true);
   const [activeTab, setActiveTab] = createSignal<TabType>('context');
   const [message, setMessage] = createSignal('');
   const [messages, setMessages] = createSignal<Message[]>([]);
@@ -337,55 +339,57 @@ const Chat: Component = () => {
       </Show>
       <Show when={user()}>
         <div class="min-h-screen max-w-screen overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-          <div class="flex h-screen">
+          <div class="flex h-screen relative">
             <Sidebar
               user={user()}
               isOpen={isSidebarOpen()}
-              activeTab={activeTab()}
-              sources={sources()}
               conversations={conversations()}
               currentConversation={currentConversation()}
-              showAddMenu={showAddMenu()}
-              selectedSourceType={selectedSourceType()}
-              newUrl={newUrl()}
               onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen())}
-              onTabChange={setActiveTab}
               onConversationSelect={handleConversationSelect}
-              onRemoveSource={handleRemoveSource}
-              onToggleAddMenu={() => setShowAddMenu(!showAddMenu())}
-              onSourceTypeSelect={setSelectedSourceType}
-              onUrlChange={setNewUrl}
-              onAddUrl={handleAddUrl}
-              onFileUpload={handleFileUpload}
               onCreateNewConversation={createNewConversation}
               onDeleteConversation={deleteConversation}
             />
 
             {/* Main Chat Area */}
             <div class={clsx(
-              "flex-1 flex flex-col transition-all duration-300",
-              !isSidebarOpen() && "lg:-ml-80"
+              "flex flex-col transition-all duration-300 w-screen",
             )}>
               {/* Chat Header */}
-              <div class="p-4 border-b border-gray-700 flex items-center">
+              <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+                <div class="flex items-center">
+                  <Show
+                    when={!isSidebarOpen()}
+                    fallback={null}
+                  >
+                    <button
+                      onClick={() => setIsSidebarOpen(true)}
+                      class="mr-4 text-gray-400 hover:text-white"
+                    >
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                    </button>
+                  </Show>
+                  <h1 class="text-xl font-bold">
+                    {currentConversation()
+                      ? conversations().find(c => c.id === currentConversation())?.title
+                      : 'New Conversation'}
+                  </h1>
+                </div>
                 <Show
-                  when={!isSidebarOpen()}
+                  when={!isPersonaSidebarOpen()}
                   fallback={null}
                 >
                   <button
-                    onClick={() => setIsSidebarOpen(true)}
-                    class="mr-4 text-gray-400 hover:text-white"
+                    onClick={() => setIsPersonaSidebarOpen(true)}
+                    class="text-gray-400 hover:text-white"
                   >
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                   </button>
                 </Show>
-                <h1 class="text-xl font-bold">
-                  {currentConversation()
-                    ? conversations().find(c => c.id === currentConversation())?.title
-                    : 'New Conversation'}
-                </h1>
               </div>
 
               {/* Messages */}
@@ -435,6 +439,21 @@ const Chat: Component = () => {
                 </div>
               </form>
             </div>
+
+            <PersonaSidebar
+              isOpen={isPersonaSidebarOpen()}
+              sources={sources()}
+              showAddMenu={showAddMenu()}
+              selectedSourceType={selectedSourceType()}
+              newUrl={newUrl()}
+              onToggleSidebar={() => setIsPersonaSidebarOpen(!isPersonaSidebarOpen())}
+              onRemoveSource={handleRemoveSource}
+              onToggleAddMenu={() => setShowAddMenu(!showAddMenu())}
+              onSourceTypeSelect={setSelectedSourceType}
+              onUrlChange={setNewUrl}
+              onAddUrl={handleAddUrl}
+              onFileUpload={handleFileUpload}
+            />
           </div>
         </div>
       </Show>

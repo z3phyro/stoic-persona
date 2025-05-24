@@ -1,19 +1,9 @@
 import { User } from '@supabase/supabase-js';
 import clsx from 'clsx';
 import { Component, Show } from 'solid-js';
-import ContextTab from './ContextTab';
 import ConversationsTab from './ConversationsTab';
 import { supabase } from '~/lib/supabase';
 import { useNavigate } from '@solidjs/router';
-
-interface Source {
-  id: string;
-  type: 'pdf' | 'url';
-  name: string;
-  url?: string;
-  file?: File;
-  addedAt: Date;
-}
 
 interface Conversation {
   id: string;
@@ -22,27 +12,13 @@ interface Conversation {
   timestamp: Date;
 }
 
-type TabType = 'context' | 'conversations';
-
 interface SidebarProps {
   user: User | null;
   isOpen: boolean;
-  activeTab: TabType;
-  sources: Source[];
   conversations: Conversation[];
   currentConversation: string | null;
-  showAddMenu: boolean;
-  selectedSourceType: 'url' | 'upload' | null;
-  newUrl: string;
   onToggleSidebar: () => void;
-  onTabChange: (tab: TabType) => void;
   onConversationSelect: (id: string) => void;
-  onRemoveSource: (id: string) => void;
-  onToggleAddMenu: () => void;
-  onSourceTypeSelect: (type: 'url' | 'upload' | null) => void;
-  onUrlChange: (url: string) => void;
-  onAddUrl: (e: Event) => void;
-  onFileUpload: (e: Event) => void;
   onCreateNewConversation: () => Promise<void>;
   onDeleteConversation: (id: string) => Promise<void>;
 }
@@ -68,13 +44,14 @@ const Sidebar: Component<SidebarProps> = (props) => {
   return (
     <div
       class={clsx(
-        "absolute lg:static w-80 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 flex flex-col",
-        props.isOpen ? "translate-x-0" : "-translate-x-full"
+        "lg:static overflow-hidden h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 z-20",
+        props.isOpen ? "min-w-80 w-80" : "w-0"
       )}
     >
+      <div class="w-80 flex flex-col">
       <div class="p-4 flex-1 overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold">Settings</h2>
+          <h2 class="text-xl font-bold">Conversations</h2>
           <Show when={props.isOpen}>
             <button
               onClick={props.onToggleSidebar}
@@ -87,57 +64,13 @@ const Sidebar: Component<SidebarProps> = (props) => {
           </Show>
         </div>
 
-        {/* Tabs */}
-        <div class="flex space-x-2 mb-4">
-          <button
-            onClick={() => props.onTabChange('context')}
-            class={clsx(
-              "flex-1 py-2 px-4 rounded-lg transition duration-300",
-              props.activeTab === 'context'
-                ? "bg-blue-500 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            )}
-          >
-            Persona
-          </button>
-          <button
-            onClick={() => props.onTabChange('conversations')}
-            class={clsx(
-              "flex-1 py-2 px-4 rounded-lg transition duration-300",
-              props.activeTab === 'conversations'
-                ? "bg-blue-500 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            )}
-          >
-            History
-          </button>
-        </div>
-
-        {/* Tab Content */}
-        <Show when={props.activeTab === 'context'}>
-          <ContextTab
-            sources={props.sources}
-            showAddMenu={props.showAddMenu}
-            selectedSourceType={props.selectedSourceType}
-            newUrl={props.newUrl}
-            onRemoveSource={props.onRemoveSource}
-            onToggleAddMenu={props.onToggleAddMenu}
-            onSourceTypeSelect={props.onSourceTypeSelect}
-            onUrlChange={props.onUrlChange}
-            onAddUrl={props.onAddUrl}
-            onFileUpload={props.onFileUpload}
-          />
-        </Show>
-
-        <Show when={props.activeTab === 'conversations'}>
-          <ConversationsTab
-            conversations={props.conversations}
-            currentConversation={props.currentConversation}
-            onConversationSelect={props.onConversationSelect}
-            onCreateNewConversation={props.onCreateNewConversation}
-            onDeleteConversation={props.onDeleteConversation}
-          />
-        </Show>
+        <ConversationsTab
+          conversations={props.conversations}
+          currentConversation={props.currentConversation}
+          onConversationSelect={props.onConversationSelect}
+          onCreateNewConversation={props.onCreateNewConversation}
+          onDeleteConversation={props.onDeleteConversation}
+        />
       </div>
 
       {/* User Profile and Logout */}
@@ -164,6 +97,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
           </svg>
           <span>Logout</span>
         </button>
+      </div>
       </div>
     </div>
   );
