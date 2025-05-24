@@ -42,52 +42,232 @@ const Chat: Component = () => {
   const [newUrl, setNewUrl] = createSignal('');
   const [showAddMenu, setShowAddMenu] = createSignal(false);
   const [selectedSourceType, setSelectedSourceType] = createSignal<'url' | 'upload' | null>(null);
-  const [conversations, setConversations] = createSignal<Conversation[]>([
-    {
-      id: '1',
-      title: 'Web Accessibility Experience',
-      lastMessage: 'Can you explain your experience with web accessibility?',
-      timestamp: new Date(),
-    },
-    {
-      id: '2',
-      title: 'Project Management',
-      lastMessage: 'Tell me about your project management approach',
-      timestamp: new Date(Date.now() - 86400000),
-    },
-  ]);
+  const [conversations, setConversations] = createSignal<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = createSignal<string | null>(null);
+  const [isLoading, setIsLoading] = createSignal(false);
 
+  // Load user and conversations
   createEffect(async () => {
     const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) navigate('/signin');
+    if (error || !data.user) {
+      navigate('/signin');
+      return;
+    }
     setUser(data.user);
+    await loadConversations();
   });
+
+  // Delete conversation
+  const deleteConversation = async (conversationId: string) => {
+    if (!confirm('Are you sure you want to delete this conversation?')) return;
+
+    const { error } = await supabase
+      .from('conversations')
+      .delete()
+      .eq('id', conversationId);
+
+    if (error) {
+      console.error('Error deleting conversation:', error);
+      return;
+    }
+
+    // Remove from local state
+    const updatedConversations = conversations().filter(c => c.id !== conversationId);
+    setConversations(updatedConversations);
+    
+    // If the deleted conversation was the current one, clear it
+    if (currentConversation() === conversationId) {
+      setCurrentConversation(null);
+      setMessages([]);
+    }
+
+    // If this was the last conversation, create a new one
+    if (updatedConversations.length === 0) {
+      await createNewConversation();
+    }
+  };
+
+  // Load conversations from Supabase
+  const loadConversations = async () => {
+    const { data, error } = await supabase
+      .from('conversations')
+      .select('*')
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading conversations:', error);
+      return;
+    }
+
+    setConversations(
+      data.map((conv) => ({
+        id: conv.id,
+        title: conv.title,
+        lastMessage: conv.last_message,
+        timestamp: new Date(conv.updated_at),
+      }))
+    );
+  };
+
+  // Load messages for a conversation
+  const loadMessages = async (conversationId: string) => {
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Error loading messages:', error);
+      return;
+    }
+
+    setMessages(
+      data.map((msg) => ({
+        id: msg.id,
+        content: msg.content,
+        role: msg.role,
+        timestamp: new Date(msg.created_at),
+      }))
+    );
+  };
+
+  // Create a new conversation
+  const createNewConversation = async () => {
+    if (!user()) return;
+
+    const { data, error } = await supabase
+      .from('conversations')
+      .insert({
+        user_id: user()?.id,
+        title: 'New Conversation',
+        last_message: '',
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating conversation:', error);
+      return;
+    }
+
+    const newConversation: Conversation = {
+      id: data.id,
+      title: data.title,
+      lastMessage: data.last_message,
+      timestamp: new Date(data.created_at),
+    };
+
+    setConversations([newConversation, ...conversations()]);
+    setCurrentConversation(data.id);
+    setMessages([]);
+  };
+
+  // Handle conversation selection
+  const handleConversationSelect = async (conversationId: string) => {
+    setCurrentConversation(conversationId);
+    await loadMessages(conversationId);
+  };
 
   const handleSendMessage = async (e: Event) => {
     e.preventDefault();
-    if (!message().trim()) return;
+    if (!message().trim() || !currentConversation()) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      content: message(),
-      role: 'user',
-      timestamp: new Date(),
-    };
-
-    setMessages([...messages(), newMessage]);
+    setIsLoading(true);
+    const userMessage = message().trim();
     setMessage('');
+
+    // Save user message to database
+    const { data: messageData, error: messageError } = await supabase
+      .from('messages')
+      .insert({
+        conversation_id: currentConversation(),
+        content: userMessage,
+        role: 'user',
+      })
+      .select()
+      .single();
+
+    if (messageError) {
+      console.error('Error saving message:', messageError);
+      setIsLoading(false);
+      return;
+    }
+
+    // Update conversation's last message and title if it's the first message
+    const { data: conversationData } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('conversation_id', currentConversation())
+      .order('created_at', { ascending: true });
+
+    const isFirstMessage = conversationData?.length === 1;
+    
+    const { data: updatedConversation } = await supabase
+      .from('conversations')
+      .update({
+        last_message: userMessage,
+        title: isFirstMessage ? userMessage : undefined,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', currentConversation())
+      .select()
+      .single();
+
+    if (updatedConversation) {
+      // Update the conversation in the local state
+      setConversations(conversations().map(conv => 
+        conv.id === currentConversation()
+          ? {
+              id: conv.id,
+              title: isFirstMessage ? userMessage : conv.title,
+              lastMessage: userMessage,
+              timestamp: new Date(updatedConversation.updated_at),
+            }
+          : conv
+      ));
+    }
+
+    // Add message to UI
+    const newMessage: Message = {
+      id: messageData.id,
+      content: userMessage,
+      role: 'user',
+      timestamp: new Date(messageData.created_at),
+    };
+    setMessages([...messages(), newMessage]);
 
     // TODO: Implement AI response
     // Simulating AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "I'm your AI persona, trained on your experiences and expertise. I can help answer questions about your professional background and knowledge.",
+    setTimeout(async () => {
+      const aiResponse = "I'm your AI persona, trained on your experiences and expertise. I can help answer questions about your professional background and knowledge.";
+      
+      // Save AI response to database
+      const { data: aiMessageData, error: aiMessageError } = await supabase
+        .from('messages')
+        .insert({
+          conversation_id: currentConversation(),
+          content: aiResponse,
+          role: 'assistant',
+        })
+        .select()
+        .single();
+
+      if (aiMessageError) {
+        console.error('Error saving AI message:', aiMessageError);
+        setIsLoading(false);
+        return;
+      }
+
+      // Add AI message to UI
+      const aiMessage: Message = {
+        id: aiMessageData.id,
+        content: aiResponse,
         role: 'assistant',
-        timestamp: new Date(),
+        timestamp: new Date(aiMessageData.created_at),
       };
-      setMessages(prev => [...prev, aiResponse]);
+      setMessages(prev => [...prev, aiMessage]);
+      setIsLoading(false);
     }, 1000);
   };
 
@@ -155,13 +335,15 @@ const Chat: Component = () => {
               newUrl={newUrl()}
               onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen())}
               onTabChange={setActiveTab}
-              onConversationSelect={setCurrentConversation}
+              onConversationSelect={handleConversationSelect}
               onRemoveSource={handleRemoveSource}
               onToggleAddMenu={() => setShowAddMenu(!showAddMenu())}
               onSourceTypeSelect={setSelectedSourceType}
               onUrlChange={setNewUrl}
               onAddUrl={handleAddUrl}
               onFileUpload={handleFileUpload}
+              onCreateNewConversation={createNewConversation}
+              onDeleteConversation={deleteConversation}
             />
 
             {/* Main Chat Area */}
@@ -226,12 +408,14 @@ const Chat: Component = () => {
                     onInput={(e) => setMessage(e.currentTarget.value)}
                     placeholder="Type your message..."
                     class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    disabled={isLoading()}
                   />
                   <button
                     type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isLoading()}
                   >
-                    Send
+                    {isLoading() ? 'Sending...' : 'Send'}
                   </button>
                 </div>
               </form>

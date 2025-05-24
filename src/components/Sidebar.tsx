@@ -43,6 +43,8 @@ interface SidebarProps {
   onUrlChange: (url: string) => void;
   onAddUrl: (e: Event) => void;
   onFileUpload: (e: Event) => void;
+  onCreateNewConversation: () => Promise<void>;
+  onDeleteConversation: (id: string) => Promise<void>;
 }
 
 const Sidebar: Component<SidebarProps> = (props) => {
@@ -132,6 +134,8 @@ const Sidebar: Component<SidebarProps> = (props) => {
             conversations={props.conversations}
             currentConversation={props.currentConversation}
             onConversationSelect={props.onConversationSelect}
+            onCreateNewConversation={props.onCreateNewConversation}
+            onDeleteConversation={props.onDeleteConversation}
           />
         </Show>
       </div>
