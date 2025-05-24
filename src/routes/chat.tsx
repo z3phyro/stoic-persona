@@ -61,16 +61,31 @@ const Chat: Component = () => {
   const deleteConversation = async (conversationId: string) => {
     if (!confirm('Are you sure you want to delete this conversation?')) return;
 
-    const { error } = await supabase
-      .from('conversations')
+    // First delete all messages in the conversation
+    const { error: messagesError } = await supabase
+      .from('messages')
       .delete()
-      .eq('id', conversationId);
+      .eq('conversation_id', conversationId)
+      .select();
 
-    if (error) {
-      console.error('Error deleting conversation:', error);
+    if (messagesError) {
+      console.error('Error deleting messages:', messagesError);
       return;
     }
 
+    // Then delete the conversation
+    const { error: conversationError } = await supabase
+      .from('conversations')
+      .delete()
+      .eq('id', conversationId)
+      .select();
+
+    if (conversationError) {
+      console.error('Error deleting conversation:', conversationError);
+      return;
+    }
+
+    console.log('Conversation deleted:', conversationId);
     // Remove from local state
     const updatedConversations = conversations().filter(c => c.id !== conversationId);
     setConversations(updatedConversations);
