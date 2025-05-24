@@ -17,7 +17,7 @@ const Navigation: Component = () => {
             <A href="/#pricing" class="text-gray-300 hover:text-white transition-colors">Pricing</A>
           </nav>
           <div class="flex items-center space-x-4">
-            <A href="/signup" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition duration-300">
+            <A href="/signin" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition duration-300">
               Get Started
             </A>
           </div>

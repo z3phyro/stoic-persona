@@ -1,7 +1,7 @@
 import { Component, createSignal } from 'solid-js';
 import { A, useNavigate } from '@solidjs/router';
-import Navigation from '../components/Navigation';
-import { useAuth } from '../contexts/AuthContext';
+import Navigation from '../../components/Navigation';
+import { useAuth } from '../../contexts/AuthContext';
 
 const SignIn: Component = () => {
   const [email, setEmail] = createSignal('');

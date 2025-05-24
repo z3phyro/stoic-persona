@@ -1,9 +1,9 @@
-import { Component, Show } from 'solid-js';
-import { Router, Route, Navigate } from '@solidjs/router';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Component } from 'solid-js';
+import { Router, Route } from '@solidjs/router';
+import { AuthProvider } from './contexts/AuthContext';
 import Home from './routes';
-import SignIn from './routes/signin';
-import SignUp from './routes/signup';
+import SignIn from './routes/auth/signin';
+import SignUp from './routes/auth/signup';
 import Chat from './routes/chat';
 import "./app.css";
 
