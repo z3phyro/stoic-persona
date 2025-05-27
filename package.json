@@ -10,7 +10,11 @@
         "@solidjs/router": "^0.15.0",
         "@solidjs/start": "^1.1.0",
         "@supabase/supabase-js": "^2.49.8",
+        "@types/jsdom": "^21.1.7",
+        "@types/node-fetch": "^2.6.12",
         "clsx": "^2.1.1",
+        "jsdom": "^26.1.0",
+        "node-fetch": "^3.3.2",
         "pdf2json": "^3.1.6",
         "solid-js": "^1.9.5",
         "vinxi": "^0.5.3"

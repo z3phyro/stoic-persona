@@ -7,6 +7,7 @@ import Sidebar from '~/components/Sidebar';
 import PersonaSidebar from '~/components/PersonaSidebar';
 import { supabase } from '~/lib/supabase';
 import { pdfService } from '~/services/pdfService';
+import { urlService } from '~/services/urlService';
 
 interface Message {
   id: string;
@@ -56,24 +57,7 @@ const Chat: Component = () => {
       const pdfSources = await pdfService.getPDFs(user()?.id!);
       
       // Load URL sources
-      const { data: urlData, error: urlError } = await supabase
-        .from('persona_sources')
-        .select('*')
-        .eq('user_id', user()?.id)
-        .eq('type', 'url')
-        .order('created_at', { ascending: false });
-
-      if (urlError) {
-        throw new Error(`Error loading URL sources: ${urlError.message}`);
-      }
-
-      const urlSources = urlData.map((source) => ({
-        id: source.id,
-        type: 'url' as const,
-        name: source.name,
-        url: source.url,
-        addedAt: new Date(source.created_at),
-      }));
+      const urlSources = await urlService.getURLs(user()?.id!);
 
       // Combine and sort all sources by creation date
       const allSources = [...pdfSources, ...urlSources].sort(
@@ -332,39 +316,20 @@ const Chat: Component = () => {
     if (!newUrl().trim()) return;
 
     try {
-      // Save to database
-      const { data, error } = await supabase
-        .from('persona_sources')
-        .insert({
-          user_id: user()?.id,
-          type: 'url',
-          name: newUrl(),
-          url: newUrl(),
-          created_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error saving URL source:', error);
-        alert('Error saving URL source');
-        return;
-      }
-
-      const newSource: Source = {
-        id: data.id,
-        type: 'url',
-        name: newUrl(),
-        url: newUrl(),
-        addedAt: new Date(data.created_at),
-      };
-
-      setSources([...sources(), newSource]);
+      setIsLoading(true);
+      const urlSource = await urlService.visitURL(newUrl(), user()?.id!);
+      
+      // Refresh all sources instead of just adding the new one
+      await loadSources();
+      
       setNewUrl('');
       setSelectedSourceType(null);
+      setShowAddMenu(false); // Close the add menu after successful upload
     } catch (error) {
-      console.error('Error saving URL source:', error);
-      alert('Error saving URL source');
+      console.error('Error processing URL:', error);
+      alert('Error processing URL');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -403,15 +368,8 @@ const Chat: Component = () => {
 
       if (source.type === 'pdf') {
         await pdfService.deletePDF(sourceId);
-      } else {
-        const { error } = await supabase
-          .from('persona_sources')
-          .delete()
-          .eq('id', sourceId);
-
-        if (error) {
-          throw new Error(`Error removing source: ${error.message}`);
-        }
+      } else if (source.type === 'url') {
+        await urlService.deleteURL(sourceId);
       }
 
       setSources(sources().filter(s => s.id !== sourceId));
