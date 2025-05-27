@@ -6,6 +6,7 @@ import Spinner from '~/components/Spinner';
 import Sidebar from '~/components/Sidebar';
 import PersonaSidebar from '~/components/PersonaSidebar';
 import { supabase } from '~/lib/supabase';
+import { pdfService } from '~/services/pdfService';
 
 interface Message {
   id: string;
@@ -48,6 +49,43 @@ const Chat: Component = () => {
   const [currentConversation, setCurrentConversation] = createSignal<string | null>(null);
   const [isLoading, setIsLoading] = createSignal(false);
 
+  // Load sources from database
+  const loadSources = async () => {
+    try {
+      // Load PDF sources
+      const pdfSources = await pdfService.getPDFs(user()?.id!);
+      
+      // Load URL sources
+      const { data: urlData, error: urlError } = await supabase
+        .from('persona_sources')
+        .select('*')
+        .eq('user_id', user()?.id)
+        .eq('type', 'url')
+        .order('created_at', { ascending: false });
+
+      if (urlError) {
+        throw new Error(`Error loading URL sources: ${urlError.message}`);
+      }
+
+      const urlSources = urlData.map((source) => ({
+        id: source.id,
+        type: 'url' as const,
+        name: source.name,
+        url: source.url,
+        addedAt: new Date(source.created_at),
+      }));
+
+      // Combine and sort all sources by creation date
+      const allSources = [...pdfSources, ...urlSources].sort(
+        (a, b) => b.addedAt.getTime() - a.addedAt.getTime()
+      );
+
+      setSources(allSources);
+    } catch (error) {
+      console.error('Error loading sources:', error);
+    }
+  };
+
   // Load user and conversations
   createEffect(async () => {
     const { data, error } = await supabase.auth.getUser();
@@ -57,6 +95,7 @@ const Chat: Component = () => {
     }
     setUser(data.user);
     await loadConversations();
+    await loadSources();
   });
 
   // Delete conversation
@@ -288,24 +327,48 @@ const Chat: Component = () => {
     }, 1000);
   };
 
-  const handleAddUrl = (e: Event) => {
+  const handleAddUrl = async (e: Event) => {
     e.preventDefault();
     if (!newUrl().trim()) return;
 
-    const newSource: Source = {
-      id: Date.now().toString(),
-      type: 'url',
-      name: newUrl(),
-      url: newUrl(),
-      addedAt: new Date(),
-    };
+    try {
+      // Save to database
+      const { data, error } = await supabase
+        .from('persona_sources')
+        .insert({
+          user_id: user()?.id,
+          type: 'url',
+          name: newUrl(),
+          url: newUrl(),
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
 
-    setSources([...sources(), newSource]);
-    setNewUrl('');
-    setSelectedSourceType(null);
+      if (error) {
+        console.error('Error saving URL source:', error);
+        alert('Error saving URL source');
+        return;
+      }
+
+      const newSource: Source = {
+        id: data.id,
+        type: 'url',
+        name: newUrl(),
+        url: newUrl(),
+        addedAt: new Date(data.created_at),
+      };
+
+      setSources([...sources(), newSource]);
+      setNewUrl('');
+      setSelectedSourceType(null);
+    } catch (error) {
+      console.error('Error saving URL source:', error);
+      alert('Error saving URL source');
+    }
   };
 
-  const handleFileUpload = (e: Event) => {
+  const handleFileUpload = async (e: Event) => {
     const input = e.target as HTMLInputElement;
     if (!input.files?.length) return;
 
@@ -315,21 +378,47 @@ const Chat: Component = () => {
       return;
     }
 
-    const newSource: Source = {
-      id: Date.now().toString(),
-      type: 'pdf',
-      name: file.name,
-      file: file,
-      addedAt: new Date(),
-    };
-
-    setSources([...sources(), newSource]);
-    input.value = ''; // Reset input
-    setSelectedSourceType(null);
+    try {
+      setIsLoading(true); // Show loading state
+      const pdfSource = await pdfService.uploadPDF(file, user()?.id!);
+      
+      // Refresh all sources instead of just adding the new one
+      await loadSources();
+      
+      input.value = ''; // Reset input
+      setSelectedSourceType(null);
+      setShowAddMenu(false); // Close the add menu after successful upload
+    } catch (error) {
+      console.error('Error processing PDF:', error);
+      alert('Error processing PDF file');
+    } finally {
+      setIsLoading(false); // Hide loading state
+    }
   };
 
-  const handleRemoveSource = (sourceId: string) => {
-    setSources(sources().filter(s => s.id !== sourceId));
+  const handleRemoveSource = async (sourceId: string) => {
+    try {
+      const source = sources().find(s => s.id === sourceId);
+      if (!source) return;
+
+      if (source.type === 'pdf') {
+        await pdfService.deletePDF(sourceId);
+      } else {
+        const { error } = await supabase
+          .from('persona_sources')
+          .delete()
+          .eq('id', sourceId);
+
+        if (error) {
+          throw new Error(`Error removing source: ${error.message}`);
+        }
+      }
+
+      setSources(sources().filter(s => s.id !== sourceId));
+    } catch (error) {
+      console.error('Error removing source:', error);
+      alert('Error removing source');
+    }
   };
 
   return (
