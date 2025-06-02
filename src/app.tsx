@@ -6,6 +6,7 @@ import Home from './routes';
 import SignIn from './routes/auth/signin';
 import SignUp from './routes/auth/signup';
 import Chat from './routes/chat';
+import AuthCallback from './routes/auth/callback';
 import "./app.css";
 
 
@@ -19,6 +20,7 @@ const App: Component = () => {
           <Route path="/signup" component={SignUp} />
           <Route path="/chat" component={Chat} />
           <Route path="/chat/:id" component={Chat} />
+          <Route path="/auth/callback" component={AuthCallback} />
         </Router>
       </ConfirmProvider>
     </AuthProvider>

@@ -2,6 +2,7 @@ import { Component, createSignal } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import Navigation from "../../components/Navigation";
 import { useAuth } from "../../contexts/AuthContext";
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 const SignIn: Component = () => {
   const [email, setEmail] = createSignal("");
@@ -109,6 +110,17 @@ const SignIn: Component = () => {
                 {loading() ? "Signing in..." : "Sign In"}
               </button>
             </form>
+
+            <div class="relative my-6">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-600"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+              </div>
+            </div>
+
+            <GoogleLoginButton />
 
             <div class="mt-6 text-center">
               <p class="text-gray-400">
