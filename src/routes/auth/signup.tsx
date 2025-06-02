@@ -41,7 +41,7 @@ const SignUp: Component = () => {
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navigation />
 
-      <div class="container mx-auto px-4 min-h-[calc(100vh-4rem)] flex items-center justify-center">
+      <div class="container mx-auto px-4 min-h-[calc(100vh)] flex items-center justify-center">
         <div class="w-full max-w-md">
           <div class="bg-gray-800 rounded-xl p-8 shadow-xl">
             <h2 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
@@ -175,12 +175,12 @@ const SignUp: Component = () => {
               </div>
             </div>
 
-            <GoogleLoginButton variant="signup" />
+            <GoogleLoginButton />
 
             <div class="mt-6 text-center">
               <p class="text-gray-400">
                 Already have an account?{" "}
-                <A href="/signin" class="text-blue-400 hover:text-blue-300">
+                <A href="/signin" class="text-blue-400 cursor-pointer hover:text-blue-300">
                   Sign in
                 </A>
               </p>

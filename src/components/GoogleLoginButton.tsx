@@ -19,7 +19,7 @@ const GoogleLoginButton: Component = () => {
   return (
     <button
       onClick={handleGoogleLogin}
-      class="w-full flex items-center justify-center gap-3 bg-white text-gray-700 hover:bg-gray-100 font-medium py-3 px-4 rounded-lg transition duration-300"
+      class="w-full cursor-pointer flex items-center justify-center gap-3 bg-[#DB4437] hover:bg-[#C53929] text-white font-medium py-3 px-4 rounded-lg transition duration-300"
     >
       <svg class="w-5 h-5" viewBox="0 0 24 24">
         <path

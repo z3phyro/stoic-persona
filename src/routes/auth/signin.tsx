@@ -125,7 +125,7 @@ const SignIn: Component = () => {
             <div class="mt-6 text-center">
               <p class="text-gray-400">
                 Don't have an account?{" "}
-                <A href="/signup" class="text-blue-400 hover:text-blue-300">
+                <A href="/signup" class="text-blue-400 cursor-pointer hover:text-blue-300">
                   Sign up
                 </A>
               </p>
