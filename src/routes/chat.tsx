@@ -58,6 +58,7 @@ const Chat: Component = () => {
   const [isLoading, setIsLoading] = createSignal(false);
   const [isThinking, setIsThinking] = createSignal(false);
   let messagesContainerRef: HTMLDivElement | undefined;
+  let messageInputRef: HTMLInputElement | undefined;
 
   // Helper function to scroll to bottom
   const scrollToBottom = () => {
@@ -65,6 +66,15 @@ const Chat: Component = () => {
       // Use requestAnimationFrame to ensure DOM has updated
       requestAnimationFrame(() => {
         messagesContainerRef!.scrollTop = messagesContainerRef!.scrollHeight;
+      });
+    }
+  };
+
+  // Helper function to focus message input
+  const focusMessageInput = () => {
+    if (messageInputRef) {
+      requestAnimationFrame(() => {
+        messageInputRef!.focus();
       });
     }
   };
@@ -255,6 +265,9 @@ const Chat: Component = () => {
     setCurrentConversation(data.id);
     setMessages([]);
     navigate(`/chat/${data.id}`);
+    
+    // Focus the message input after creating a new conversation
+    focusMessageInput();
   };
 
   // Handle conversation selection
@@ -607,6 +620,7 @@ const Chat: Component = () => {
               >
                 <div class="flex space-x-4">
                   <input
+                    ref={messageInputRef}
                     type="text"
                     value={message()}
                     onInput={(e) => setMessage(e.currentTarget.value)}
