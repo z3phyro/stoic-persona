@@ -1,4 +1,4 @@
-import { useNavigate } from '@solidjs/router';
+import { useNavigate, useParams } from '@solidjs/router';
 import { User } from '@supabase/supabase-js';
 import clsx from 'clsx';
 import { Component, createEffect, createSignal, Show } from 'solid-js';
@@ -39,6 +39,7 @@ type TabType = 'context' | 'conversations';
 const Chat: Component = () => {
   const [user, setUser] = createSignal<User | null>(null);
   const navigate = useNavigate();
+  const params = useParams();
   const [isSidebarOpen, setIsSidebarOpen] = createSignal(true);
   const [isPersonaSidebarOpen, setIsPersonaSidebarOpen] = createSignal(true);
   const [activeTab, setActiveTab] = createSignal<TabType>('context');
@@ -82,6 +83,18 @@ const Chat: Component = () => {
     setUser(data.user);
     await loadConversations();
     await loadSources();
+
+    // If there's a conversation ID in the URL, select it
+    if (params.id) {
+      setCurrentConversation(params.id);
+      await loadMessages(params.id);
+    } else if (conversations().length > 0) {
+      // If no conversation is selected, select the latest one
+      const latestConversation = conversations()[0];
+      setCurrentConversation(latestConversation.id);
+      await loadMessages(latestConversation.id);
+      navigate(`/chat/${latestConversation.id}`, { replace: true });
+    }
   });
 
   // Delete conversation
@@ -203,12 +216,14 @@ const Chat: Component = () => {
     setConversations([newConversation, ...conversations()]);
     setCurrentConversation(data.id);
     setMessages([]);
+    navigate(`/chat/${data.id}`);
   };
 
   // Handle conversation selection
   const handleConversationSelect = async (conversationId: string) => {
     setCurrentConversation(conversationId);
     await loadMessages(conversationId);
+    navigate(`/chat/${conversationId}`);
   };
 
   const handleSendMessage = async (e: Event) => {

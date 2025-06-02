@@ -15,10 +15,8 @@ const App: Component = () => {
           <Route path="/" component={Home} />
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
-          <Route 
-            path="/chat" 
-            component={Chat} 
-          />
+          <Route path="/chat" component={Chat} />
+          <Route path="/chat/:id" component={Chat} />
       </Router>
     </AuthProvider>
   );
