@@ -40,7 +40,8 @@ Instructions:
 3. Maintain a professional and technical tone
 4. If you're unsure about something, acknowledge the limitations and askfor clarification
 5. Do not make claims that aren't supported by the sources
-6. Structure the response in a way that is easy to understand and follow. Using paragraphs and lists when appropriate. Use html tags to format the response.`
+6. Structure the response in a way that is easy to understand and follow. Using paragraphs and lists when appropriate. Use html tags to format the response.
+7. Answer using the first person because you are representing the user, answer with confidence dont cite the sources.`
       };
 
       // Prepare the API request
