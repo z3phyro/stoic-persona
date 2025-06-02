@@ -30,7 +30,7 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
     <div
       class={clsx(
         "lg:static h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300  z-10",
-        props.isOpen ? "w-120" : "w-0"
+        props.isOpen ? "w-80" : "w-0"
       )}
     >
       <div class="w-80 flex flex-col">
