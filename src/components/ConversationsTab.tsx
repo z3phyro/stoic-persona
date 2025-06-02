@@ -39,7 +39,7 @@ const ConversationsTab: Component<ConversationsTabProps> = (props) => {
           >
             <div class="w-full text-left">
               <div class="min-w-0 pr-8">
-                <h3 class="font-medium truncate">{conv.title}</h3>
+                <h3 class="font-medium">{conv.title}</h3>
                 <p class="text-xs text-gray-500 mt-1">
                   {conv.timestamp.toLocaleTimeString([], {
                     hour: "2-digit",
