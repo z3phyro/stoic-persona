@@ -9,6 +9,7 @@ import { supabase } from "~/lib/supabase";
 import { pdfService } from "~/services/pdfService";
 import { urlService } from "~/services/urlService";
 import { aiService } from "~/services/aiService";
+import { useConfirm } from "~/contexts/ConfirmContext";
 
 interface Message {
   id: string;
@@ -59,6 +60,7 @@ const Chat: Component = () => {
   const [isThinking, setIsThinking] = createSignal(false);
   let messagesContainerRef: HTMLDivElement | undefined;
   let messageInputRef: HTMLInputElement | undefined;
+  const confirm = useConfirm();
 
   // Helper function to scroll to bottom
   const scrollToBottom = () => {
@@ -143,7 +145,13 @@ const Chat: Component = () => {
 
   // Delete conversation
   const deleteConversation = async (conversationId: string) => {
-    if (!confirm("Are you sure you want to delete this conversation?")) return;
+    const confirmed = await confirm.showConfirm({
+      message: "Are you sure you want to delete this conversation?",
+      confirmText: "Delete",
+      cancelText: "Cancel"
+    });
+
+    if (!confirmed) return;
 
     // First delete all messages in the conversation
     const { error: messagesError } = await supabase

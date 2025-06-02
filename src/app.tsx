@@ -1,6 +1,7 @@
 import { Component } from 'solid-js';
 import { Router, Route } from '@solidjs/router';
 import { AuthProvider } from './contexts/AuthContext';
+import { ConfirmProvider } from './contexts/ConfirmContext';
 import Home from './routes';
 import SignIn from './routes/auth/signin';
 import SignUp from './routes/auth/signup';
@@ -11,13 +12,15 @@ import "./app.css";
 const App: Component = () => {
   return (
     <AuthProvider>
-      <Router>
+      <ConfirmProvider>
+        <Router>
           <Route path="/" component={Home} />
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
           <Route path="/chat" component={Chat} />
           <Route path="/chat/:id" component={Chat} />
-      </Router>
+        </Router>
+      </ConfirmProvider>
     </AuthProvider>
   );
 };
