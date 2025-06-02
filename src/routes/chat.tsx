@@ -166,15 +166,17 @@ const Chat: Component = () => {
     );
     setConversations(updatedConversations);
 
-    // If the deleted conversation was the current one, clear it
+    // If the deleted conversation was the current one, select the latest one
     if (currentConversation() === conversationId) {
-      setCurrentConversation(null);
-      setMessages([]);
-    }
-
-    // If this was the last conversation, create a new one
-    if (updatedConversations.length === 0) {
-      await createNewConversation();
+      if (updatedConversations.length > 0) {
+        const latestConversation = updatedConversations[0];
+        setCurrentConversation(latestConversation.id);
+        await loadMessages(latestConversation.id);
+        navigate(`/chat/${latestConversation.id}`);
+      } else {
+        // If no conversations left, create a new one
+        await createNewConversation();
+      }
     }
   };
 
