@@ -32,13 +32,36 @@ const Sidebar: Component<SidebarProps> = (props) => {
   };
 
   const getUserInitials = (user: User | null) => {
-    if (!user?.user_metadata?.full_name) return '?';
-    return user.user_metadata.full_name
-      .split(' ')
-      .map((n: string) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
+    if (!user) return '?';
+    
+    if (user.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    
+    // Use email if no full name is available
+    if (user.email) {
+      const emailName = user.email.split('@')[0];
+      const parts = emailName.split('.');
+      
+      if (parts.length > 1) {
+        // If email has dots, use first letter of each part
+        return parts
+          .map(part => part[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+      }
+      
+      // If no dots, use first two letters
+      return emailName.slice(0, 2).toUpperCase();
+    }
+    
+    return '?';
   };
 
   return (
