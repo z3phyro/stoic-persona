@@ -501,6 +501,8 @@ const Chat: Component = () => {
                 "[&::-webkit-scrollbar]:transition-colors",
                 "[&::-webkit-scrollbar]:duration-200",
                 "[-webkit-overflow-scrolling:touch]",
+                isSidebarOpen() ? "ml-80" : "ml-0",
+                isPersonaSidebarOpen() ? "mr-80" : "mr-0"
               )}
             >
               {/* Chat Header */}

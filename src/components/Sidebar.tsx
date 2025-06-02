@@ -44,11 +44,11 @@ const Sidebar: Component<SidebarProps> = (props) => {
   return (
     <div
       class={clsx(
-        "lg:static overflow-hidden h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 z-20",
-        props.isOpen ? "min-w-80 w-80" : "w-0"
+        "fixed top-0 left-0 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 ease-in-out z-20 w-80",
+        props.isOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
-      <div class="w-80 flex flex-col justify-between flex-1 h-full">
+      <div class="w-full flex flex-col justify-between flex-1 h-full">
       <div class="p-4 flex-1 overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold">Conversations</h2>

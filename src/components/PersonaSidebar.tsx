@@ -29,11 +29,11 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
   return (
     <div
       class={clsx(
-        "lg:static h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300  z-10",
-        props.isOpen ? "w-80" : "w-0"
+        "fixed top-0 right-0 h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300 ease-in-out z-10 w-80",
+        props.isOpen ? "translate-x-0" : "translate-x-full"
       )}
     >
-      <div class="w-80 flex flex-col">
+      <div class="w-full flex flex-col">
       <div class="p-4 flex-1 overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold">Persona Sources</h2>
