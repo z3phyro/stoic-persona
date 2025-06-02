@@ -8,6 +8,7 @@ import PersonaSidebar from '~/components/PersonaSidebar';
 import { supabase } from '~/lib/supabase';
 import { pdfService } from '~/services/pdfService';
 import { urlService } from '~/services/urlService';
+import { aiService } from '~/services/aiService';
 
 interface Message {
   id: string;
@@ -27,6 +28,7 @@ interface Source {
   id: string;
   type: 'pdf' | 'url';
   name: string;
+  content: string;
   url?: string;
   file?: File;
   addedAt: Date;
@@ -277,10 +279,13 @@ const Chat: Component = () => {
     };
     setMessages([...messages(), newMessage]);
 
-    // TODO: Implement AI response
-    // Simulating AI response
-    setTimeout(async () => {
-      const aiResponse = "I'm your AI persona, trained on your experiences and expertise. I can help answer questions about your professional background and knowledge.";
+    try {
+      // Get AI response
+      const aiResponse = await aiService.getAIResponse(
+        messages().map(msg => ({ role: msg.role, content: msg.content })),
+        sources(),
+        currentConversation()!
+      );
       
       // Save AI response to database
       const { data: aiMessageData, error: aiMessageError } = await supabase
@@ -307,8 +312,12 @@ const Chat: Component = () => {
         timestamp: new Date(aiMessageData.created_at),
       };
       setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      alert('Error getting AI response. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleAddUrl = async (e: Event) => {
