@@ -1,24 +1,24 @@
-import { Component, createSignal } from 'solid-js';
-import { A, useNavigate } from '@solidjs/router';
-import Navigation from '../../components/Navigation';
-import { useAuth } from '../../contexts/AuthContext';
+import { Component, createSignal } from "solid-js";
+import { A, useNavigate } from "@solidjs/router";
+import Navigation from "../../components/Navigation";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SignUp: Component = () => {
-  const [name, setName] = createSignal('');
-  const [email, setEmail] = createSignal('');
-  const [password, setPassword] = createSignal('');
-  const [confirmPassword, setConfirmPassword] = createSignal('');
-  const [error, setError] = createSignal('');
+  const [name, setName] = createSignal("");
+  const [email, setEmail] = createSignal("");
+  const [password, setPassword] = createSignal("");
+  const [confirmPassword, setConfirmPassword] = createSignal("");
+  const [error, setError] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   const navigate = useNavigate();
   const auth = useAuth();
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (password() !== confirmPassword()) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
@@ -26,9 +26,11 @@ const SignUp: Component = () => {
 
     try {
       await auth.signUp(email(), password(), name());
-      navigate('/chat');
+      navigate("/chat");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during sign up');
+      setError(
+        err instanceof Error ? err.message : "An error occurred during sign up",
+      );
     } finally {
       setLoading(false);
     }
@@ -37,23 +39,26 @@ const SignUp: Component = () => {
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navigation />
-      
+
       <div class="container mx-auto px-4 min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div class="w-full max-w-md">
           <div class="bg-gray-800 rounded-xl p-8 shadow-xl">
             <h2 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
               Create Your Account
             </h2>
-            
+
             {error() && (
               <div class="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
                 {error()}
               </div>
             )}
-            
+
             <form class="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label for="name" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Full Name
                 </label>
                 <input
@@ -68,7 +73,10 @@ const SignUp: Component = () => {
               </div>
 
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Email
                 </label>
                 <input
@@ -81,9 +89,12 @@ const SignUp: Component = () => {
                   required
                 />
               </div>
-              
+
               <div>
-                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -98,7 +109,10 @@ const SignUp: Component = () => {
               </div>
 
               <div>
-                <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="confirmPassword"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -111,38 +125,49 @@ const SignUp: Component = () => {
                   required
                 />
               </div>
-              
-              <div class="flex items-center">
+
+              <div class="flex items-start sm:items-center">
                 <input
                   type="checkbox"
                   id="terms"
                   required
-                  class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                  class="h-4 mt-0.5 sm:mt-0 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                 />
-                <label for="terms" class="ml-2 block text-sm text-gray-300">
-                  I agree to the{' '}
-                  <a href="#" class="text-blue-400 hover:text-blue-300">
+                <label
+                  for="terms"
+                  class="ml-2 block text-sm text-gray-300 cursor-pointer"
+                >
+                  I agree to the{" "}
+                  <a
+                    href="https://stoicdynamics.com/terms"
+                    target="_blank"
+                    class="text-blue-400 hover:text-blue-300"
+                  >
                     Terms of Service
-                  </a>{' '}
-                  and{' '}
-                  <a href="#" class="text-blue-400 hover:text-blue-300">
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://stoicdynamics.com/privacy"
+                    target="_blank"
+                    class="text-blue-400 hover:text-blue-300"
+                  >
                     Privacy Policy
                   </a>
                 </label>
               </div>
-              
+
               <button
                 type="submit"
                 disabled={loading()}
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading() ? 'Creating Account...' : 'Create Account'}
+                {loading() ? "Creating Account..." : "Create Account"}
               </button>
             </form>
-            
+
             <div class="mt-6 text-center">
               <p class="text-gray-400">
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <A href="/signin" class="text-blue-400 hover:text-blue-300">
                   Sign in
                 </A>
@@ -155,4 +180,4 @@ const SignUp: Component = () => {
   );
 };
 
-export default SignUp; 
+export default SignUp;

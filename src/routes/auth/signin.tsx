@@ -1,26 +1,28 @@
-import { Component, createSignal } from 'solid-js';
-import { A, useNavigate } from '@solidjs/router';
-import Navigation from '../../components/Navigation';
-import { useAuth } from '../../contexts/AuthContext';
+import { Component, createSignal } from "solid-js";
+import { A, useNavigate } from "@solidjs/router";
+import Navigation from "../../components/Navigation";
+import { useAuth } from "../../contexts/AuthContext";
 
 const SignIn: Component = () => {
-  const [email, setEmail] = createSignal('');
-  const [password, setPassword] = createSignal('');
-  const [error, setError] = createSignal('');
+  const [email, setEmail] = createSignal("");
+  const [password, setPassword] = createSignal("");
+  const [error, setError] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   const navigate = useNavigate();
   const auth = useAuth();
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await auth.signIn(email(), password());
-      navigate('/chat');
+      navigate("/chat");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during sign in');
+      setError(
+        err instanceof Error ? err.message : "An error occurred during sign in",
+      );
     } finally {
       setLoading(false);
     }
@@ -29,23 +31,26 @@ const SignIn: Component = () => {
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <Navigation />
-      
+
       <div class="container mx-auto px-4 min-h-[calc(100vh-4rem)] flex items-center justify-center">
         <div class="w-full max-w-md">
           <div class="bg-gray-800 rounded-xl p-8 shadow-xl">
             <h2 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
               Welcome Back
             </h2>
-            
+
             {error() && (
               <div class="mb-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400 text-sm">
                 {error()}
               </div>
             )}
-            
+
             <form class="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Email
                 </label>
                 <input
@@ -58,9 +63,12 @@ const SignIn: Component = () => {
                   required
                 />
               </div>
-              
+
               <div>
-                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+                <label
+                  for="password"
+                  class="block text-sm font-medium text-gray-300 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -73,7 +81,7 @@ const SignIn: Component = () => {
                   required
                 />
               </div>
-              
+
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <input
@@ -81,7 +89,10 @@ const SignIn: Component = () => {
                     id="remember"
                     class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                   />
-                  <label for="remember" class="ml-2 block text-sm text-gray-300">
+                  <label
+                    for="remember"
+                    class=" cursor-pointer ml-2 block text-sm text-gray-300"
+                  >
                     Remember me
                   </label>
                 </div>
@@ -89,19 +100,19 @@ const SignIn: Component = () => {
                   Forgot password?
                 </a>
               </div>
-              
+
               <button
                 type="submit"
                 disabled={loading()}
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="w-full cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading() ? 'Signing in...' : 'Sign In'}
+                {loading() ? "Signing in..." : "Sign In"}
               </button>
             </form>
-            
+
             <div class="mt-6 text-center">
               <p class="text-gray-400">
-                Don't have an account?{' '}
+                Don't have an account?{" "}
                 <A href="/signup" class="text-blue-400 hover:text-blue-300">
                   Sign up
                 </A>
@@ -114,4 +125,4 @@ const SignIn: Component = () => {
   );
 };
 
-export default SignIn; 
+export default SignIn;
