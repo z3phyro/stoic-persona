@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from '@solidjs/router';
 import { User } from '@supabase/supabase-js';
 import clsx from 'clsx';
-import { Component, createEffect, createSignal, Show } from 'solid-js';
+import { Component, createEffect, createSignal, Show, onMount } from 'solid-js';
 import Spinner from '~/components/Spinner';
 import Sidebar from '~/components/Sidebar';
 import PersonaSidebar from '~/components/PersonaSidebar';
@@ -53,6 +53,35 @@ const Chat: Component = () => {
   const [currentConversation, setCurrentConversation] = createSignal<string | null>(null);
   const [isLoading, setIsLoading] = createSignal(false);
   const [isThinking, setIsThinking] = createSignal(false);
+  let messagesContainerRef: HTMLDivElement | undefined;
+
+  // Helper function to scroll to bottom
+  const scrollToBottom = () => {
+    if (messagesContainerRef) {
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        messagesContainerRef!.scrollTop = messagesContainerRef!.scrollHeight;
+      });
+    }
+  };
+
+  // Auto-scroll to bottom when messages change
+  createEffect(() => {
+    // Add a small delay to ensure content is rendered
+    setTimeout(scrollToBottom, 100);
+  });
+
+  // Also scroll when thinking state changes
+  createEffect(() => {
+    if (isThinking()) {
+      scrollToBottom();
+    }
+  });
+
+  // Scroll to bottom on initial load
+  onMount(() => {
+    scrollToBottom();
+  });
 
   // Load sources from database
   const loadSources = async () => {
@@ -330,6 +359,9 @@ const Chat: Component = () => {
         timestamp: new Date(aiMessageData.created_at),
       };
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Ensure scroll after AI message is added
+      setTimeout(scrollToBottom, 100);
     } catch (error) {
       console.error('Error getting AI response:', error);
       alert('Error getting AI response. Please try again.');
@@ -468,7 +500,10 @@ const Chat: Component = () => {
               </div>
 
               {/* Messages */}
-              <div class="flex-1 overflow-y-auto p-4 space-y-4">
+              <div 
+                ref={messagesContainerRef}
+                class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+              >
                 {messages().map((msg) => (
                   <div
                     class={clsx(
