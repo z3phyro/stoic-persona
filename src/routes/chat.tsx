@@ -461,6 +461,14 @@ const Chat: Component = () => {
             {/* Main Chat Area */}
             <div class={clsx(
               "flex flex-col transition-all duration-300 w-screen",
+              "[&::-webkit-scrollbar]:w-2.5",
+              "[&::-webkit-scrollbar-track]:bg-gray-800",
+              "[&::-webkit-scrollbar-thumb]:bg-gray-600",
+              "[&::-webkit-scrollbar-thumb]:rounded-full",
+              "[&::-webkit-scrollbar-thumb:hover]:bg-gray-500",
+              "[&::-webkit-scrollbar]:transition-colors",
+              "[&::-webkit-scrollbar]:duration-200",
+              "[-webkit-overflow-scrolling:touch]"
             )}>
               {/* Chat Header */}
               <div class="p-4 border-b border-gray-700 flex items-center justify-between">
@@ -502,7 +510,15 @@ const Chat: Component = () => {
               {/* Messages */}
               <div 
                 ref={messagesContainerRef}
-                class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+                class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth
+                  [&::-webkit-scrollbar]:w-2.5
+                  [&::-webkit-scrollbar-track]:bg-gray-800
+                  [&::-webkit-scrollbar-thumb]:bg-gray-600
+                  [&::-webkit-scrollbar-thumb]:rounded-full
+                  [&::-webkit-scrollbar-thumb:hover]:bg-gray-500
+                  [&::-webkit-scrollbar]:transition-colors
+                  [&::-webkit-scrollbar]:duration-200
+                  [-webkit-overflow-scrolling:touch]"
               >
                 {messages().map((msg) => (
                   <div
