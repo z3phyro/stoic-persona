@@ -465,7 +465,7 @@ const Chat: Component = () => {
                           : "bg-gray-700 text-gray-200"
                       )}
                     >
-                      <p>{msg.content}</p>
+                      <div innerHTML={msg.content} />
                       <p class="text-xs mt-2 opacity-70">
                         {msg.timestamp.toLocaleTimeString()}
                       </p>
