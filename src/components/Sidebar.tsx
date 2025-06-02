@@ -48,7 +48,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
         props.isOpen ? "min-w-80 w-80" : "w-0"
       )}
     >
-      <div class="w-80 flex flex-col">
+      <div class="w-80 flex flex-col justify-between flex-1 h-full">
       <div class="p-4 flex-1 overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold">Conversations</h2>
