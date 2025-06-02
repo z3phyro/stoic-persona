@@ -52,6 +52,7 @@ const Chat: Component = () => {
   const [conversations, setConversations] = createSignal<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = createSignal<string | null>(null);
   const [isLoading, setIsLoading] = createSignal(false);
+  const [isThinking, setIsThinking] = createSignal(false);
 
   // Load sources from database
   const loadSources = async () => {
@@ -295,6 +296,7 @@ const Chat: Component = () => {
     setMessages([...messages(), newMessage]);
 
     try {
+      setIsThinking(true);
       // Get AI response
       const aiResponse = await aiService.getAIResponse(
         messages().map(msg => ({ role: msg.role, content: msg.content })),
@@ -316,6 +318,7 @@ const Chat: Component = () => {
       if (aiMessageError) {
         console.error('Error saving AI message:', aiMessageError);
         setIsLoading(false);
+        setIsThinking(false);
         return;
       }
 
@@ -332,6 +335,7 @@ const Chat: Component = () => {
       alert('Error getting AI response. Please try again.');
     } finally {
       setIsLoading(false);
+      setIsThinking(false);
     }
   };
 
@@ -487,6 +491,17 @@ const Chat: Component = () => {
                     </div>
                   </div>
                 ))}
+                <Show when={isThinking()}>
+                  <div class="flex justify-start">
+                    <div class="bg-gray-700 text-gray-200 rounded-lg p-4">
+                      <div class="flex space-x-2">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+                      </div>
+                    </div>
+                  </div>
+                </Show>
               </div>
 
               {/* Message Input */}
@@ -505,7 +520,7 @@ const Chat: Component = () => {
                     class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isLoading()}
                   >
-                    {isLoading() ? 'Sending...' : 'Send'}
+                    {isLoading() ? 'Answering...' : 'Send'}
                   </button>
                 </div>
               </form>
