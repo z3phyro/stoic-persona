@@ -33,26 +33,7 @@ const Navigation: Component = () => {
               Stoic Persona{" "}
             </A>
           </div>
-          <nav class="hidden md:flex space-x-8">
-            <A
-              href="/#features"
-              class="text-gray-300 hover:text-white transition-colors"
-            >
-              Features
-            </A>
-            <A
-              href="/#example"
-              class="text-gray-300 hover:text-white transition-colors"
-            >
-              Example
-            </A>
-            <A
-              href="/#pricing"
-              class="text-gray-300 hover:text-white transition-colors"
-            >
-              Pricing
-            </A>
-          </nav>
+          <nav class="hidden md:flex space-x-8"></nav>
           <div class="flex items-center space-x-4">
             <A
               href="/signin"
