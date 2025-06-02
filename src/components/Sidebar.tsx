@@ -55,7 +55,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
           <Show when={props.isOpen}>
             <button
               onClick={props.onToggleSidebar}
-              class="text-gray-400 hover:text-white"
+              class="text-gray-400 hover:text-white cursor-pointer"
             >
               <svg class="w-6 h-6 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -90,7 +90,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
         </div>
         <button
           onClick={handleLogout}
-          class="w-full flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-300"
+          class="w-full cursor-pointer flex items-center justify-center space-x-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition duration-300"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

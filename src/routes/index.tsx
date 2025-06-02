@@ -17,9 +17,12 @@ const Home: Component = () => {
             Let your AI persona represent your expertise, experiences, and
             insights with remarkable accuracy.
           </p>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+          <a
+            href="/chat"
+            class="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105"
+          >
             Create Your AI Persona
-          </button>
+          </a>
         </div>
       </div>
 
