@@ -142,6 +142,11 @@ const Chat: Component = () => {
       setCurrentConversation(latestConversation.id);
       await loadMessages(latestConversation.id);
       navigate(`/chat/${latestConversation.id}`, { replace: true });
+    } else {
+      // If no conversations exist, create a new one
+      await createNewConversation();
+      // Focus the message input after creating a new conversation
+      focusMessageInput();
     }
   });
 
