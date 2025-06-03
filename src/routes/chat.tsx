@@ -6,6 +6,7 @@ import { Toaster, toast } from "solid-sonner";
 import Spinner from "~/components/Spinner";
 import Sidebar from "~/components/Sidebar";
 import PersonaSidebar from "~/components/PersonaSidebar";
+import ChatTour from "~/components/ChatTour";
 import { supabase } from "~/lib/supabase";
 import { pdfService } from "~/services/pdfService";
 import { urlService } from "~/services/urlService";
@@ -522,6 +523,7 @@ const Chat: Component = () => {
       <Show when={user()}>
         <div class="min-h-screen max-w-screen overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 text-white">
           <Toaster position="bottom-right" expand />
+          <ChatTour user={user()} />
           <div class="flex h-screen relative">
             <Sidebar
               user={user()}
@@ -532,6 +534,7 @@ const Chat: Component = () => {
               onConversationSelect={handleConversationSelect}
               onCreateNewConversation={createNewConversation}
               onDeleteConversation={deleteConversation}
+              class="conversations-list"
             />
 
             {/* Main Chat Area */}
@@ -688,7 +691,7 @@ const Chat: Component = () => {
                     value={message()}
                     onInput={(e) => setMessage(e.currentTarget.value)}
                     placeholder="Type your message..."
-                    class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    class="message-input flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     disabled={isLoading()}
                   />
                   <button
@@ -717,6 +720,7 @@ const Chat: Component = () => {
               onUrlChange={setNewUrl}
               onAddUrl={handleAddUrl}
               onFileUpload={handleFileUpload}
+              class="persona-sources"
             />
           </div>
         </div>

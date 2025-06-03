@@ -20,12 +20,13 @@ interface PersonaSidebarProps {
   selectedSourceType: 'url' | 'upload' | null;
   newUrl: string;
   onToggleSidebar: () => void;
-  onRemoveSource: (id: string) => void;
+  onRemoveSource: (sourceId: string) => Promise<void>;
   onToggleAddMenu: () => void;
   onSourceTypeSelect: (type: 'url' | 'upload' | null) => void;
   onUrlChange: (url: string) => void;
-  onAddUrl: (e: Event) => void;
-  onFileUpload: (e: Event) => void;
+  onAddUrl: (e: Event) => Promise<void>;
+  onFileUpload: (e: Event) => Promise<void>;
+  class?: string;
 }
 
 const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
@@ -66,7 +67,8 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
     <div
       class={clsx(
         "fixed top-0 right-0 h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300 ease-in-out z-10 w-80",
-        props.isOpen ? "translate-x-0" : "translate-x-full"
+        props.isOpen ? "translate-x-0" : "translate-x-full",
+        props.class
       )}
     >
       <div class="w-full flex flex-col">
@@ -124,7 +126,7 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
               {/* Add Source Button */}
               <button
                 onClick={() => setShowSourceTypeModal(true)}
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center space-x-2"
+                class="add-source-button w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center space-x-2"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

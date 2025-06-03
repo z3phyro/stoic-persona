@@ -18,9 +18,10 @@ interface SidebarProps {
   conversations: Conversation[];
   currentConversation: string | null;
   onToggleSidebar: () => void;
-  onConversationSelect: (id: string) => void;
+  onConversationSelect: (conversationId: string) => Promise<void>;
   onCreateNewConversation: () => Promise<void>;
-  onDeleteConversation: (id: string) => Promise<void>;
+  onDeleteConversation: (conversationId: string) => Promise<void>;
+  class?: string;
 }
 
 const Sidebar: Component<SidebarProps> = (props) => {
@@ -68,7 +69,8 @@ const Sidebar: Component<SidebarProps> = (props) => {
     <div
       class={clsx(
         "fixed top-0 left-0 h-screen bg-gray-800 border-r border-gray-700 transition-all duration-300 ease-in-out z-20 w-80",
-        props.isOpen ? "translate-x-0" : "-translate-x-full"
+        props.isOpen ? "translate-x-0" : "-translate-x-full",
+        props.class
       )}
     >
       <div class="w-full flex flex-col justify-between flex-1 h-full">
