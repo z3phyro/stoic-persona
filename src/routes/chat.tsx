@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "@solidjs/router";
 import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import { Component, createEffect, createSignal, Show, onMount } from "solid-js";
+import { Toaster, toast } from "solid-sonner";
 import Spinner from "~/components/Spinner";
 import Sidebar from "~/components/Sidebar";
 import PersonaSidebar from "~/components/PersonaSidebar";
@@ -417,9 +418,10 @@ const Chat: Component = () => {
       setNewUrl("");
       setSelectedSourceType(null);
       setShowAddMenu(false); // Close the add menu after successful upload
+      toast.success("URL source added successfully");
     } catch (error) {
       console.error("Error processing URL:", error);
-      alert("Error processing URL");
+      toast.error("Failed to process URL. Please try again.");
     } finally {
       setIsUploadingSource(false);
     }
@@ -431,7 +433,7 @@ const Chat: Component = () => {
 
     const file = input.files[0];
     if (file.type !== "application/pdf") {
-      alert("Please upload a PDF file");
+      toast.error("Please upload a PDF file");
       return;
     }
 
@@ -445,9 +447,10 @@ const Chat: Component = () => {
       input.value = ""; // Reset input
       setSelectedSourceType(null);
       setShowAddMenu(false); // Close the add menu after successful upload
+      toast.success("PDF source added successfully");
     } catch (error) {
       console.error("Error processing PDF:", error);
-      alert("Error processing PDF file");
+      toast.error("Failed to process PDF file. Please try again.");
     } finally {
       setIsUploadingSource(false); // Hide loading state
     }
@@ -465,9 +468,10 @@ const Chat: Component = () => {
       }
 
       setSources(sources().filter((s) => s.id !== sourceId));
+      toast.success("Source removed successfully");
     } catch (error) {
       console.error("Error removing source:", error);
-      alert("Error removing source");
+      toast.error("Failed to remove source. Please try again.");
     }
   };
 
@@ -478,6 +482,7 @@ const Chat: Component = () => {
       </Show>
       <Show when={user()}>
         <div class="min-h-screen max-w-screen overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+          <Toaster position="bottom-right" expand />
           <div class="flex h-screen relative">
             <Sidebar
               user={user()}
