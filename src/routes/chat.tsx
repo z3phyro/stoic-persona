@@ -147,6 +147,19 @@ const Chat: Component = () => {
 
   // Delete conversation
   const deleteConversation = async (conversationId: string) => {
+    // First verify that the conversation belongs to the user
+    const { data: conversation, error: ownershipError } = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("id", conversationId)
+      .eq("user_id", user()?.id)
+      .single();
+
+    if (ownershipError || !conversation) {
+      console.error("Error: Conversation not found or unauthorized");
+      return;
+    }
+
     const confirmed = await confirm.showConfirm({
       message: "Are you sure you want to delete this conversation?",
       confirmText: "Delete",
@@ -205,6 +218,7 @@ const Chat: Component = () => {
     const { data, error } = await supabase
       .from("conversations")
       .select("*")
+      .eq("user_id", user()?.id)
       .order("updated_at", { ascending: false });
 
     if (error) {
@@ -224,6 +238,20 @@ const Chat: Component = () => {
 
   // Load messages for a conversation
   const loadMessages = async (conversationId: string) => {
+    // First verify that the conversation belongs to the user
+    const { data: conversation, error: ownershipError } = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("id", conversationId)
+      .eq("user_id", user()?.id)
+      .single();
+
+    if (ownershipError || !conversation) {
+      console.error("Error: Conversation not found or unauthorized");
+      navigate("/chat");
+      return;
+    }
+
     const { data, error } = await supabase
       .from("messages")
       .select("*")
@@ -291,6 +319,20 @@ const Chat: Component = () => {
     e.preventDefault();
     if (!message().trim() || !currentConversation()) return;
 
+    // First verify that the conversation belongs to the user
+    const { data: conversation, error: ownershipError } = await supabase
+      .from("conversations")
+      .select("id")
+      .eq("id", currentConversation())
+      .eq("user_id", user()?.id)
+      .single();
+
+    if (ownershipError || !conversation) {
+      console.error("Error: Conversation not found or unauthorized");
+      navigate("/chat");
+      return;
+    }
+
     setIsLoading(true);
     const userMessage = message().trim();
     setMessage("");
@@ -313,19 +355,11 @@ const Chat: Component = () => {
     }
 
     // Update conversation's last message and title if it's the first message
-    const { data: conversationData } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("conversation_id", currentConversation())
-      .order("created_at", { ascending: true });
-
-    const isFirstMessage = conversationData?.length === 1;
-
     const { data: updatedConversation } = await supabase
       .from("conversations")
       .update({
         last_message: userMessage,
-        title: isFirstMessage ? userMessage : undefined,
+        title: userMessage,
         updated_at: new Date().toISOString(),
       })
       .eq("id", currentConversation())
@@ -339,7 +373,7 @@ const Chat: Component = () => {
           conv.id === currentConversation()
             ? {
               id: conv.id,
-              title: isFirstMessage ? userMessage : conv.title,
+              title: userMessage,
               lastMessage: userMessage,
               timestamp: new Date(updatedConversation.updated_at),
             }
