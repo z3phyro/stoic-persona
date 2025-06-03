@@ -57,6 +57,7 @@ const Chat: Component = () => {
     string | null
   >(null);
   const [isLoading, setIsLoading] = createSignal(false);
+  const [isUploadingSource, setIsUploadingSource] = createSignal(false);
   const [isThinking, setIsThinking] = createSignal(false);
   let messagesContainerRef: HTMLDivElement | undefined;
   let messageInputRef: HTMLInputElement | undefined;
@@ -407,7 +408,7 @@ const Chat: Component = () => {
     if (!newUrl().trim()) return;
 
     try {
-      setIsLoading(true);
+      setIsUploadingSource(true);
       const urlSource = await urlService.visitURL(newUrl(), user()?.id!);
 
       // Refresh all sources instead of just adding the new one
@@ -420,7 +421,7 @@ const Chat: Component = () => {
       console.error("Error processing URL:", error);
       alert("Error processing URL");
     } finally {
-      setIsLoading(false);
+      setIsUploadingSource(false);
     }
   };
 
@@ -435,7 +436,7 @@ const Chat: Component = () => {
     }
 
     try {
-      setIsLoading(true); // Show loading state
+      setIsUploadingSource(true); // Show loading state
       const pdfSource = await pdfService.uploadPDF(file, user()?.id!);
 
       // Refresh all sources instead of just adding the new one
@@ -448,7 +449,7 @@ const Chat: Component = () => {
       console.error("Error processing PDF:", error);
       alert("Error processing PDF file");
     } finally {
-      setIsLoading(false); // Hide loading state
+      setIsUploadingSource(false); // Hide loading state
     }
   };
 
@@ -540,30 +541,38 @@ const Chat: Component = () => {
                       : "New Conversation"}
                   </h1>
                 </div>
-                <Show when={!isPersonaSidebarOpen()} fallback={null}>
-                  <button
-                    onClick={() => setIsPersonaSidebarOpen(true)}
-                    class="text-gray-400 hover:text-white"
-                  >
-                    <svg
-                      class="w-6 h-6 cursor-pointer"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                <div class="flex items-center space-x-4">
+                  <Show when={isUploadingSource()}>
+                    <div class="flex items-center space-x-2 text-sm text-gray-400">
+                      <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                      <span>Processing source...</span>
+                    </div>
+                  </Show>
+                  <Show when={!isPersonaSidebarOpen()} fallback={null}>
+                    <button
+                      onClick={() => setIsPersonaSidebarOpen(true)}
+                      class="text-gray-400 hover:text-white"
                     >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                      <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
-                      <path d="M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39z" />
-                    </svg>
-                  </button>
-                </Show>
+                      <svg
+                        class="w-6 h-6 cursor-pointer"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
+                        <path d="M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39z" />
+                      </svg>
+                    </button>
+                  </Show>
+                </div>
               </div>
 
               {/* Messages */}
