@@ -1,5 +1,6 @@
 import { Component } from "solid-js";
 import Navigation from "../components/Navigation";
+import { A } from "@solidjs/router";
 
 const Home: Component = () => {
   return (
@@ -17,12 +18,12 @@ const Home: Component = () => {
             Let your AI persona represent your expertise, experiences, and
             insights with remarkable accuracy.
           </p>
-          <a
+          <A
             href="/chat"
             class="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105"
           >
             Create Your AI Persona
-          </a>
+          </A>
         </div>
       </div>
 
