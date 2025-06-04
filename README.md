@@ -1,6 +1,6 @@
 # Stoic Persona
 
-A modern web application built with SolidJS and TailwindCSS, designed to help users explore and understand Stoic philosophy.
+A AI chat application built with SolidJS and TailwindCSS, designed to help users answer questions for them based on their experience.
 
 ## Tech Stack
 
