@@ -68,8 +68,9 @@ const Chat: Component = () => {
   // Check if we're on mobile
   const isMobile = () => window.innerWidth < 640; // 640px is the sm breakpoint in Tailwind
 
-  // Set initial sidebar state based on screen size
-  onMount(() => {
+  // Set initial sidebar state based on screen size and initialize data
+  onMount(async () => {
+    // Set sidebar states
     setIsSidebarOpen(!isMobile());
     setIsPersonaSidebarOpen(!isMobile());
     
@@ -83,6 +84,33 @@ const Chat: Component = () => {
         setIsPersonaSidebarOpen(true);
       }
     });
+
+    // Load initial data
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
+      navigate("/signin");
+      return;
+    }
+    setUser(data.user);
+    await loadConversations();
+    await loadSources();
+
+    // Handle conversation selection
+    if (params.id) {
+      setCurrentConversation(params.id);
+      await loadMessages(params.id);
+    } else if (conversations().length > 0) {
+      const latestConversation = conversations()[0];
+      setCurrentConversation(latestConversation.id);
+      await loadMessages(latestConversation.id);
+      navigate(`/chat/${latestConversation.id}`, { replace: true });
+    } else {
+      await createNewConversation();
+      focusMessageInput();
+    }
+
+    // Initial scroll
+    scrollToBottom();
   });
 
   // Helper function to scroll to bottom
@@ -117,11 +145,6 @@ const Chat: Component = () => {
     }
   });
 
-  // Scroll to bottom on initial load
-  onMount(() => {
-    scrollToBottom();
-  });
-
   // Load sources from database
   const loadSources = async () => {
     try {
@@ -141,35 +164,6 @@ const Chat: Component = () => {
       console.error("Error loading sources:", error);
     }
   };
-
-  // Load user and conversations
-  createEffect(async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
-      navigate("/signin");
-      return;
-    }
-    setUser(data.user);
-    await loadConversations();
-    await loadSources();
-
-    // If there's a conversation ID in the URL, select it
-    if (params.id) {
-      setCurrentConversation(params.id);
-      await loadMessages(params.id);
-    } else if (conversations().length > 0) {
-      // If no conversation is selected, select the latest one
-      const latestConversation = conversations()[0];
-      setCurrentConversation(latestConversation.id);
-      await loadMessages(latestConversation.id);
-      navigate(`/chat/${latestConversation.id}`, { replace: true });
-    } else {
-      // If no conversations exist, create a new one
-      await createNewConversation();
-      // Focus the message input after creating a new conversation
-      focusMessageInput();
-    }
-  });
 
   // Delete conversation
   const deleteConversation = async (conversationId: string) => {
