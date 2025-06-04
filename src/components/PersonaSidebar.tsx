@@ -66,7 +66,7 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
   return (
     <div
       class={clsx(
-        "fixed top-0 right-0 h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300 ease-in-out z-10 w-80",
+        "fixed top-0 right-0 h-screen bg-gray-800 border-l border-gray-700 transition-all duration-300 ease-in-out z-10 w-full sm:w-80",
         props.isOpen ? "translate-x-0" : "translate-x-full",
         props.class
       )}
@@ -75,16 +75,14 @@ const PersonaSidebar: Component<PersonaSidebarProps> = (props) => {
         <div class="p-4 flex-1 overflow-y-auto">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold">Persona Sources</h2>
-            <Show when={props.isOpen}>
-              <button
-                onClick={props.onToggleSidebar}
-                class="text-gray-400 hover:text-white"
-              >
-                <svg class="w-6 h-6 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </Show>
+            <button
+              onClick={props.onToggleSidebar}
+              class="text-gray-400 hover:text-white"
+            >
+              <svg class="w-6 h-6 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
           <div class="space-y-4">

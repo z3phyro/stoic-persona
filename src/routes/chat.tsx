@@ -43,8 +43,8 @@ const Chat: Component = () => {
   const [user, setUser] = createSignal<User | null>(null);
   const navigate = useNavigate();
   const params = useParams();
-  const [isSidebarOpen, setIsSidebarOpen] = createSignal(true);
-  const [isPersonaSidebarOpen, setIsPersonaSidebarOpen] = createSignal(true);
+  const [isSidebarOpen, setIsSidebarOpen] = createSignal(false);
+  const [isPersonaSidebarOpen, setIsPersonaSidebarOpen] = createSignal(false);
   const [activeTab, setActiveTab] = createSignal<TabType>("context");
   const [message, setMessage] = createSignal("");
   const [messages, setMessages] = createSignal<Message[]>([]);
@@ -64,6 +64,26 @@ const Chat: Component = () => {
   let messagesContainerRef: HTMLDivElement | undefined;
   let messageInputRef: HTMLInputElement | undefined;
   const confirm = useConfirm();
+
+  // Check if we're on mobile
+  const isMobile = () => window.innerWidth < 640; // 640px is the sm breakpoint in Tailwind
+
+  // Set initial sidebar state based on screen size
+  onMount(() => {
+    setIsSidebarOpen(!isMobile());
+    setIsPersonaSidebarOpen(!isMobile());
+    
+    // Add resize listener to update sidebar state
+    window.addEventListener('resize', () => {
+      if (isMobile()) {
+        setIsSidebarOpen(false);
+        setIsPersonaSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+        setIsPersonaSidebarOpen(true);
+      }
+    });
+  });
 
   // Helper function to scroll to bottom
   const scrollToBottom = () => {
@@ -555,7 +575,7 @@ const Chat: Component = () => {
             >
               {/* Chat Header */}
               <div class="p-4 border-b border-gray-700 flex items-center justify-between">
-                <div class="flex items-center">
+                <div class="flex items-center w-[calc(100%-20px)] sm:w-full h-8">
                   <Show when={!isSidebarOpen()} fallback={null}>
                     <button
                       onClick={() => setIsSidebarOpen(true)}
@@ -580,7 +600,7 @@ const Chat: Component = () => {
                       </svg>
                     </button>
                   </Show>
-                  <h1 class="text-xl font-bold">
+                  <h1 class="text-xl font-bold w-full truncate ">
                     {currentConversation()
                       ? conversations().find(
                         (c) => c.id === currentConversation(),
