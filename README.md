@@ -1,20 +1,48 @@
-# SolidStart
+# Stoic Persona
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);
+A modern web application built with SolidJS and TailwindCSS, designed to help users explore and understand Stoic philosophy.
 
-## Creating a project
+## Tech Stack
+
+- [SolidJS](https://www.solidjs.com/) - A declarative, efficient, and flexible JavaScript library for building user interfaces
+- [TailwindCSS](https://tailwindcss.com/) - A utility-first CSS framework
+- [Vinxi](https://vinxi.dev/) - A modern build tool for SolidJS applications
+- [Supabase](https://supabase.com/) - Open source Firebase alternative
+- [Anthropic Claude](https://www.anthropic.com/) - AI integration for enhanced functionality
+
+## Prerequisites
+
+- Node.js >= 22
+- npm or yarn
+
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
 
 ```bash
-# create a new project in the current directory
-npm init solid@latest
+# Supabase Configuration
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# create a new project in my-app
-npm init solid@latest my-app
+# Anthropic API Configuration
+ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
-## Developing
+You can obtain these values from:
+- Supabase: Project Settings > API
+- Anthropic: API Keys section in your account dashboard
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
+
+## Development
+
+Start the development server:
 
 ```bash
 npm run dev
@@ -23,10 +51,24 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+## Building for Production
 
-Solid apps are built with _presets_, which optimise your project for deployment to different environments.
+Build the application:
 
-By default, `npm run build` will generate a Node app that you can run with `npm start`. To use a different preset, add it to the `devDependencies` in `package.json` and specify in your `app.config.js`.
+```bash
+npm run build
+```
 
-## This project was created with the [Solid CLI](https://solid-cli.netlify.app)
+Start the production server:
+
+```bash
+npm start
+```
+
+## Features
+
+- Modern UI with TailwindCSS
+- AI-powered insights
+- Database integration with Supabase
+- PDF processing capabilities
+- Interactive user experience with driver.js
