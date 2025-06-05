@@ -49,7 +49,13 @@ const UrlModal: Component<UrlModalProps> = (props) => {
   };
 
   const handleUrlChange = (e: Event) => {
-    const value = (e.target as HTMLInputElement).value;
+    let value = (e.target as HTMLInputElement).value;
+    
+    // Add https:// if no protocol is specified
+    if (value && !value.match(/^https?:\/\//)) {
+      value = `https://${value}`;
+    }
+    
     setUrl(value);
     props.onUrlChange(value);
   };
