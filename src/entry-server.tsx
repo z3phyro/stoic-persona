@@ -16,14 +16,14 @@ export default createHandler(() => (
           <meta property="og:url" content="https://persona.stoic.sh/" />
           <meta property="og:title" content="Stoic Persona" />
           <meta property="og:description" content="Your AI persona to answer questions for you" />
-          <meta property="og:image" content="https://persona.stoic.sh/favicon.svg" />
+          <meta property="og:image" content="https://persona.stoic.sh/stoic-persona.svg" />
 
           {/* Twitter */}
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:url" content="https://persona.stoic.sh/" />
           <meta property="twitter:title" content="Stoic Persona" />
           <meta property="twitter:description" content="Your AI persona to answer questions for you" />
-          <meta property="twitter:image" content="https://persona.stoic.sh/favicon.svg" />
+          <meta property="twitter:image" content="https://persona.stoic.sh/stoic-persona.svg" />
 
           <title>Stoic Persona</title>
           <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
