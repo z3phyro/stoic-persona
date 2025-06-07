@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { User } from "@supabase/supabase-js";
 import clsx from "clsx";
 import { Component, createEffect, onMount, Show } from "solid-js";
 import { Toaster, toast } from "solid-sonner";
@@ -41,7 +40,7 @@ const Chat: Component = () => {
     // Load initial data
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) {
-      navigate("/signin");
+      navigate("/signin", { replace: true });
       return;
     }
     chatStore.setUser(data.user);
