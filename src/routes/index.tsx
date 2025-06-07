@@ -6,7 +6,9 @@ import { Motion } from "solid-motionone";
 const Home: Component = () => {
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-      <Navigation />
+      <div class="fixed top-0 left-0 right-0 z-50">
+        <Navigation />
+      </div>
 
       {/* Hero Section */}
       <div class="container mx-auto px-4 pt-32 pb-20">
@@ -52,44 +54,43 @@ const Home: Component = () => {
         <Motion.div
           animate={{ opacity: [0, 1] }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          class="max-w-6xl mx-auto"
         >
-          <Motion.div
-            animate={{ opacity: [0, 1], y: [20, 0] }}
-            transition={{ duration: 0.6, delay: 1 }}
-            class="bg-gray-800 p-6 rounded-xl hover:bg-gray-700 transition duration-300"
-          >
-            <div class="text-blue-400 text-4xl mb-4">🤖</div>
-            <h3 class="text-xl font-bold mb-3">AI-Powered Responses</h3>
-            <p class="text-gray-400">
-              Your AI persona can answer questions about your experiences, just
-              like you would.
-            </p>
-          </Motion.div>
-          <Motion.div
-            animate={{ opacity: [0, 1], y: [20, 0] }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-            class="bg-gray-800 p-6 rounded-xl hover:bg-gray-700 transition duration-300"
-          >
-            <div class="text-blue-400 text-4xl mb-4">📚</div>
-            <h3 class="text-xl font-bold mb-3">Experience Repository</h3>
-            <p class="text-gray-400">
-              Store and organize your professional journey, achievements, and
-              expertise.
-            </p>
-          </Motion.div>
-          <Motion.div
-            animate={{ opacity: [0, 1], y: [20, 0] }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-            class="bg-gray-800 p-6 rounded-xl hover:bg-gray-700 transition duration-300"
-          >
-            <div class="text-blue-400 text-4xl mb-4">💡</div>
-            <h3 class="text-xl font-bold mb-3">Smart Insights</h3>
-            <p class="text-gray-400">
-              Get intelligent responses about your work, projects, and
-              professional knowledge.
-            </p>
-          </Motion.div>
+          <div class="grid md:grid-cols-3 gap-8">
+            <Motion.div
+              animate={{ opacity: [0, 1], y: [20, 0] }}
+              transition={{ duration: 0.6, delay: 1 }}
+              class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300 transform hover:scale-105"
+            >
+              <div class="text-blue-400 text-5xl mb-6">🤖</div>
+              <h3 class="text-2xl font-bold mb-4">AI-Powered Responses</h3>
+              <p class="text-gray-400 leading-relaxed">
+                Experience natural, context-aware conversations that mirror your communication style and expertise. Your AI persona learns and adapts to provide authentic responses.
+              </p>
+            </Motion.div>
+            <Motion.div
+              animate={{ opacity: [0, 1], y: [20, 0] }}
+              transition={{ duration: 0.6, delay: 1.2 }}
+              class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300 transform hover:scale-105"
+            >
+              <div class="text-blue-400 text-5xl mb-6">📚</div>
+              <h3 class="text-2xl font-bold mb-4">Knowledge Base</h3>
+              <p class="text-gray-400 leading-relaxed">
+                Build a comprehensive repository of your professional journey, including projects, achievements, and domain expertise. Your AI persona becomes an extension of your knowledge.
+              </p>
+            </Motion.div>
+            <Motion.div
+              animate={{ opacity: [0, 1], y: [20, 0] }}
+              transition={{ duration: 0.6, delay: 1.4 }}
+              class="bg-gray-800 p-8 rounded-xl hover:bg-gray-700 transition duration-300 transform hover:scale-105"
+            >
+              <div class="text-blue-400 text-5xl mb-6">💡</div>
+              <h3 class="text-2xl font-bold mb-4">Smart Insights</h3>
+              <p class="text-gray-400 leading-relaxed">
+                Leverage advanced AI to generate intelligent responses about your work, projects, and professional knowledge. Get meaningful insights and perspectives.
+              </p>
+            </Motion.div>
+          </div>
         </Motion.div>
       </div>
 
@@ -98,20 +99,20 @@ const Home: Component = () => {
         <Motion.div
           animate={{ opacity: [0, 1], y: [30, 0] }}
           transition={{ duration: 0.8, delay: 1.6 }}
-          class="max-w-4xl mx-auto bg-gray-800 rounded-xl p-8"
+          class="max-w-2xl mx-auto bg-gray-800 rounded-xl p-8"
         >
           <h2 class="text-3xl font-bold mb-6 text-center">
             Example Interaction
           </h2>
-          <div class="bg-gray-900 rounded-lg p-6">
-            <p class="text-gray-300 mb-4">
-              Q: "Can you explain your experience with web accessibility?"
-            </p>
-            <p class="text-gray-400 italic">
-              A: "I've worked extensively with web accessibility standards,
-              implementing WCAG guidelines and ensuring inclusive design
-              practices..."
-            </p>
+          <div class="flex flex-col md:flex-row gap-8 items-center">
+            <div class="w-full">
+              <img 
+                src="/example.jpg" 
+                alt="Example AI Persona Interaction" 
+                class="rounded-lg shadow-lg w-full h-auto"
+              />
+            </div>
+            
           </div>
         </Motion.div>
       </div>
