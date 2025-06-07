@@ -102,7 +102,7 @@ const Home: Component = () => {
         <Motion.div
           animate={{ opacity: [0, 1], y: [30, 0] }}
           transition={{ duration: 0.8, delay: 1.6 }}
-          class="max-w-2xl mx-auto bg-gray-800 rounded-xl p-8"
+          class="max-w-2xl mx-auto bg-gray-800 rounded-xl p-8 transition-transform duration-300 hover:scale-105 cursor-pointer"
         >
           <h2 class="text-3xl font-bold mb-6 text-center">
             Example Interaction
@@ -115,7 +115,6 @@ const Home: Component = () => {
                 class="rounded-lg shadow-lg w-full h-auto"
               />
             </div>
-            
           </div>
         </Motion.div>
       </div>
