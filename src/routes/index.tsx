@@ -2,8 +2,11 @@ import { Component } from "solid-js";
 import Navigation from "../components/Navigation";
 import { A } from "@solidjs/router";
 import { Motion } from "solid-motionone";
+import { useAuth } from "../contexts/AuthContext";
 
 const Home: Component = () => {
+  const auth = useAuth();
+
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <div class="fixed top-0 left-0 right-0 z-50">
@@ -43,7 +46,7 @@ const Home: Component = () => {
               href="/chat"
               class="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105"
             >
-              Create Your AI Persona
+              {auth.user() ? "Interact with your AI Persona" : "Create Your AI Persona"}
             </A>
           </Motion.div>
         </div>

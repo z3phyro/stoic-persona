@@ -1,7 +1,10 @@
 import { Component } from "solid-js";
 import { A } from "@solidjs/router";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navigation: Component = () => {
+  const auth = useAuth();
+
   return (
     <header class="fixed w-full bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
       <div class="container mx-auto px-4">
@@ -36,10 +39,10 @@ const Navigation: Component = () => {
           <nav class="hidden md:flex space-x-8"></nav>
           <div class="flex items-center space-x-4">
             <A
-              href="/signin"
+              href={auth.user() ? "/chat" : "/signin"}
               class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition duration-300"
             >
-              Get Started
+              {auth.user() ? "Chat with AI" : "Get Started"}
             </A>
           </div>
         </div>
