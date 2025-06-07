@@ -3,6 +3,7 @@ import { A, useNavigate } from "@solidjs/router";
 import Navigation from "../../components/Navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
+import { Motion } from "solid-motionone";
 
 const SignIn: Component = () => {
   const [email, setEmail] = createSignal("");
@@ -34,7 +35,12 @@ const SignIn: Component = () => {
       <Navigation />
 
       <div class="container mx-auto px-4 min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div class="w-full max-w-md">
+        <Motion
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, easing: "ease-out" }}
+          class="w-full max-w-md"
+        >
           <div class="bg-gray-800 rounded-xl p-8 shadow-xl">
             <h2 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
               Welcome Back
@@ -131,7 +137,7 @@ const SignIn: Component = () => {
               </p>
             </div>
           </div>
-        </div>
+        </Motion>
       </div>
     </div>
   );
