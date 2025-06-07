@@ -9,6 +9,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, name: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: () => boolean;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>();
@@ -83,6 +85,32 @@ export const AuthProvider: Component<{ children: any }> = (props) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      console.log('Password reset email sent');
+    } catch (error) {
+      console.error('Password reset error:', error);
+      throw error;
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      console.log('Password updated successfully');
+    } catch (error) {
+      console.error('Password update error:', error);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     session,
@@ -90,6 +118,8 @@ export const AuthProvider: Component<{ children: any }> = (props) => {
     signUp,
     signOut,
     loading,
+    resetPassword,
+    updatePassword,
   };
 
   return (
